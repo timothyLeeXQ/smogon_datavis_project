@@ -1,0 +1,49 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+
+
+```{r}
+library(jsonlite)
+```
+
+
+```{r}
+x <- fromJSON("https://www.smogon.com/stats/2020-01/chaos/gen8ou-0.json", simplifyDataFrame = TRUE)
+```
+
+```{r}
+x$info
+```
+
+
+https://www.smogon.com/forums/threads/official-smogon-university-usage-statistics-discussion-thread-mk-2.3508502/
+
+Checks & counters - array of 3 numbers for each pokemon. What do they represent?
+
+Number n of times the matchup occurred (don't count U-Turn KOs or force-outs)
+The fraction p of times the counter got the KO or caused a switch
+Standard deviation for the previous value: sqrt(p*(1.0-p)/n)
+
+```{r}
+x$data$Mandibuzz$`Checks and Counters`$Clefable
+```
+
+```{r}
+x$data$Mandibuzz$`Viability Ceiling`
+```
+
+Teammates
+the number in the JSON is the number in the TXT times the pokemon's usage (see chunk below)
+```{r}
+x$data$Mandibuzz$Teammates$Swoobat
+```
+
+Pokemon usage is best calculated by summing abilities - do compare this with usage txt
+```{r}
+x$data$Mandibuzz$Abilities$bigpecks
+x$data$Mandibuzz$Abilities$overcoat
+x$data$Mandibuzz$Abilities$weakarmor
+```
+
