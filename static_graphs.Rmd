@@ -1,0 +1,73 @@
+---
+title: "static_graphs"
+author: "Timothy Lee"
+date: "24/03/2020"
+output: html_document
+---
+
+```{r}
+library(readr)
+library(tidyr)
+library(dplyr)
+library(stringr)
+library(rvest)
+library(purrr)
+```
+
+```{r}
+usage <- read_lines("data/gen8ou/gen8ou-0_usage.txt")
+total_battles <- str_extract(usage[1], pattern = "[0-9]+")
+total_battles
+```
+
+```{r}
+#df_usage_colnames <- str_remove_all(usage[4], "[[:space:]]+") %>%
+#  str_split(pattern = "\\|")
+
+df_usage <- usage[6:(length(usage) - 1)] %>%
+  data.frame(stringsAsFactors = FALSE) %>%
+  separate(., col = ., sep = "\\|+", into = as.character(c(1:9))) %>%
+  select(as.character(c(2:8)))
+
+
+#Remove spaces in columns and percent signs
+df_usage <- apply(df_usage, 2, str_remove_all, pattern = "[[:space:]]|%") %>%
+  data.frame(stringsAsFactors = FALSE)
+
+colnames(df_usage) <- c("Rank",
+                        "Pokemon",
+                        "Usage %",
+                        "Raw",
+                        "Raw %",
+                        "Real",
+                        "Real %")
+
+df_usage$Rank <- as.integer(df_usage$Rank)
+df_usage$`Usage %` <- as.double(df_usage$`Usage %`)
+df_usage$Raw <- as.integer(df_usage$Raw)
+df_usage$`Raw %` <- as.double(df_usage$`Raw %`)
+df_usage$Real <- as.integer(df_usage$Real)
+df_usage$`Real %` <- as.double(df_usage$`Real %`)
+
+df_usage
+```
+
+```{r}
+# dex
+df_dex <- read_html("Pokémon Pokédex_ list of Pokémon with stats _ Pokémon Database.html") %>%
+  html_node(xpath = '//*[@id="pokedex"]') %>%
+  html_table()
+
+head(df_dex)
+```
+
+```{r}
+# type df
+df_usage_type <- left_join(df_usage, df_dex, by = c("Pokemon" = "Name"))
+head(df_usage_type)
+```
+
+```{r}
+filter(df_usage_type, is.na(Type))
+```
+

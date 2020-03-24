@@ -47,3 +47,12 @@ x$data$Mandibuzz$Abilities$overcoat
 x$data$Mandibuzz$Abilities$weakarmor
 ```
 
+```{r}
+x$data$Duraludon$`Raw count`
+```
+
+```{r}
+unlist(x$data$Mandibuzz$Items)
+
+```
+

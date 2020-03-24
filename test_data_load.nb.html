@@ -1758,6 +1758,9 @@ summary {
 <!-- rnb-text-begin -->
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxueCA8LSBmcm9tSlNPTihcImh0dHBzOi8vd3d3LnNtb2dvbi5jb20vc3RhdHMvMjAyMC0wMS9jaGFvcy9nZW44b3UtMC5qc29uXCIsIHNpbXBsaWZ5RGF0YUZyYW1lID0gVFJVRSlcbmBgYCJ9 -->
+<pre class="r"><code>x &lt;- fromJSON(&quot;https://www.smogon.com/stats/2020-01/chaos/gen8ou-0.json&quot;, simplifyDataFrame = TRUE)</code></pre>
+<!-- rnb-source-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
 <!-- rnb-text-end -->
@@ -1845,8 +1848,52 @@ $`number of battles`
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
 <!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxueCRkYXRhJER1cmFsdWRvbiRgUmF3IGNvdW50YFxuXG5gYGAifQ== -->
+<pre class="r"><code>x$data$Duraludon$`Raw count`
+</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-output-begin eyJkYXRhIjoiWzFdIDU3NjIxXG4ifQ== -->
+<pre><code>[1] 57621</code></pre>
+<!-- rnb-output-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxudW5saXN0KHgkZGF0YSRNYW5kaWJ1enokSXRlbXMpXG5gYGAifQ== -->
+<pre class="r"><code>unlist(x$data$Mandibuzz$Items)</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-output-begin eyJkYXRhIjoiICAgICB3YWNhbmJlcnJ5ICAgICAgICBza3lwbGF0ZSAgIHNhZmV0eWdvZ2dsZXMgICAgIGNob3BsZWJlcnJ5ICAgICBwZXRheWFiZXJyeSAgICAgIG1lbnRhbGhlcmIgICAgICBzYWxhY2JlcnJ5IFxuICAgICAgICAgICAgIDI0ICAgICAgICAgICAgICAxNiAgICAgICAgICAgICAgMTUgICAgICAgICAgICAgICA1ICAgICAgICAgICAgICAgNiAgICAgICAgICAgICAgODUgICAgICAgICAgICAgIDExIFxuICAgIHJvY2t5aGVsbWV0ICAgICAgeWFjaGViZXJyeSAgICAgICBsZWFmc3RvbmUgICBhZHJlbmFsaW5lb3JiICAgICAgIGZpZ3liZXJyeSAgICAgICBmb2N1c3Nhc2ggICAgICAgb3JhbmJlcnJ5IFxuICAgICAgICAgIDM3MTU1ICAgICAgICAgICAgICAzNCAgICAgICAgICAgICAgIDYgICAgICAgICAgICAgICAxICAgICAgICAgICAgIDE5NiAgICAgICAgICAgICAzMTIgICAgICAgICAgICAgICAxIFxuICAgICBmbGFtZXBsYXRlICAgICBjaG9pY2VzcGVjcyAgd2Vha25lc3Nwb2xpY3kgICAgZmx5aW5nbWVtb3J5ICAgICAgIHdpa2liZXJyeSAgICAgICBzaGVkc2hlbGwgICAgIGNoZXN0b2JlcnJ5IFxuICAgICAgICAgICAgIDE0ICAgICAgICAgICAgICAyMiAgICAgICAgICAgICAyNDggICAgICAgICAgICAgICAyICAgICAgICAgICAgICA4MSAgICAgICAgICAgICAgNDQgICAgICAgICAgICAgMTA0IFxuICAgICBhaXJiYWxsb29uICAgICBhc3NhdWx0dmVzdCAgICAgIHN0YXJmYmVycnkgICAgIGFzcGVhcmJlcnJ5ICAgICAgIHNoYXJwYmVhayAgICAgICBzaGVsbGJlbGwgICAgICAgICBsaWZlb3JiIFxuICAgICAgICAgICAgICAxICAgICAgICAgICAgIDQ4MiAgICAgICAgICAgICAgIDIgICAgICAgICAgICAgICAzICAgICAgICAgICAgICAxNyAgICAgICAgICAgICAgIDUgICAgICAgICAgICAgMzUxIFxuICAgYmxhY2tnbGFzc2VzICAgICAgICBmbGFtZW9yYiAgICAgIG11c2NsZWJhbmQgICAgIGFwaWNvdGJlcnJ5ICAgICBnYW5sb25iZXJyeSAgICAgIGV4cGVydGJlbHQgICAgICBhZ3VhdmJlcnJ5IFxuICAgICAgICAgICAgMjU1ICAgICAgICAgICAgICAgMSAgICAgICAgICAgICAgIDUgICAgICAgICAgICAgICA3ICAgICAgICAgICAgICAxMCAgICAgICAgICAgICAxMDAgICAgICAgICAgICAxMTEwIFxuICAgIHJvc2VsaWJlcnJ5ICAgICAgYWJzb3JiYnVsYiAgICAgICBlamVjdHBhY2sgICAgICAgbWFnb2JlcnJ5ICAgICAgICBoZWF0cm9jayB1dGlsaXR5dW1icmVsbGEgICAgICAga2luZ3Nyb2NrIFxuICAgICAgICAgICAgIDI3ICAgICAgICAgICAgICAgMSAgICAgICAgICAgICAgIDIgICAgICAgICAgICAgIDg4ICAgICAgICAgICAgICAyOCAgICAgICAgICAgICAgIDEgICAgICAgICAgICAgIDE4IFxuICAgICAgaGVhdnliYWxsICAgICAgICBkYW1wcm9jayAgaGVhdnlkdXR5Ym9vdHMgICAgICAgcG93ZXJoZXJiICAgICAgICB0b3hpY29yYiAgICAgICAgd2lkZWxlbnMgICAgICAgbGVmdG92ZXJzIFxuICAgICAgICAgICAgIDg3ICAgICAgICAgICAgICAxOSAgICAgICAgICAyMTE1MDggICAgICAgICAgICAgIDIwICAgICAgICAgICAgICAgMyAgICAgICAgICAgICAgIDggICAgICAgICAgIDgxODcyIFxuICAgICAgbWlzdHlzZWVkICAgICBjaG9pY2VzY2FyZiAgICAgICAgIHJlZGNhcmQgICAgICAgcXVpY2tjbGF3ICAgICAgYmVycnlqdWljZSAgICAgIGRhcmttZW1vcnkgICAgIGNlbGxiYXR0ZXJ5IFxuICAgICAgICAgICAgICAyICAgICAgICAgICAgIDE3OSAgICAgICAgICAgICA2NTAgICAgICAgICAgICAgIDE2ICAgICAgICAgICAgICAgNCAgICAgICAgICAgICAgIDUgICAgICAgICAgICAgICA1IFxuICAgICAgIHNub3diYWxsICAgICB3aXNlZ2xhc3NlcyAgICAgICAgIGJpZ3Jvb3QgICAgICAgICBub3RoaW5nICAgICAgIGZvY3VzYmFuZCAgICAgICAgZXZpb2xpdGUgICAgICBkcmVhZHBsYXRlIFxuICAgICAgICAgICAgICAzICAgICAgICAgICAgICAgMiAgICAgICAgICAgICAgMzMgICAgICAgICAgICAgNjYzICAgICAgICAgICAgICAgOCAgICAgICAgICAgICAgNDIgICAgICAgICAgICAgIDMzIFxuICAgICAgd2hpdGVoZXJiICAgICByb2NraW5jZW5zZSAgICBtYXJhbmdhYmVycnkgICAgIGVqZWN0YnV0dG9uICAgICAgIG1ldHJvbm9tZSAgICAgbGllY2hpYmVycnkgICAgIGlhcGFwYWJlcnJ5IFxuICAgICAgICAgICAgIDcyICAgICAgICAgICAgICAgNiAgICAgICAgICAgICAgIDQgICAgICAgICAgICAgIDY4ICAgICAgICAgICAgIDMzMyAgICAgICAgICAgICAgIDUgICAgICAgICAgICAgMzIxIFxuICBibHVuZGVycG9saWN5ICAgICAgbGVwcGFiZXJyeSAgICAgY2hhcnRpYmVycnkgICAgIHNpdHJ1c2JlcnJ5ICAgICAgICBsdW1iZXJyeSAgICAgbGFnZ2luZ3RhaWwgICAgYnJpZ2h0cG93ZGVyIFxuICAgICAgICAgICAgICA0ICAgICAgICAgICAgICAgNCAgICAgICAgICAgICAgMTggICAgICAgICAgICAgNDM2ICAgICAgICAgICAgIDI1NyAgICAgICAgICAgICAgMzIgICAgICAgICAgICAgIDQxIFxuICAgICByb2NrbWVtb3J5ICAgICAgY2hvaWNlYmFuZCAgICAgICBub3JtYWxnZW0gXG4gICAgICAgICAgICAgIDEgICAgICAgICAgICAgIDcwICAgICAgICAgICAgICAgNCBcbiJ9 -->
+<pre><code>     wacanberry        skyplate   safetygoggles     chopleberry     petayaberry      mentalherb      salacberry 
+             24              16              15               5               6              85              11 
+    rockyhelmet      yacheberry       leafstone   adrenalineorb       figyberry       focussash       oranberry 
+          37155              34               6               1             196             312               1 
+     flameplate     choicespecs  weaknesspolicy    flyingmemory       wikiberry       shedshell     chestoberry 
+             14              22             248               2              81              44             104 
+     airballoon     assaultvest      starfberry     aspearberry       sharpbeak       shellbell         lifeorb 
+              1             482               2               3              17               5             351 
+   blackglasses        flameorb      muscleband     apicotberry     ganlonberry      expertbelt      aguavberry 
+            255               1               5               7              10             100            1110 
+    roseliberry      absorbbulb       ejectpack       magoberry        heatrock utilityumbrella       kingsrock 
+             27               1               2              88              28               1              18 
+      heavyball        damprock  heavydutyboots       powerherb        toxicorb        widelens       leftovers 
+             87              19          211508              20               3               8           81872 
+      mistyseed     choicescarf         redcard       quickclaw      berryjuice      darkmemory     cellbattery 
+              2             179             650              16               4               5               5 
+       snowball     wiseglasses         bigroot         nothing       focusband        eviolite      dreadplate 
+              3               2              33             663               8              42              33 
+      whiteherb     rockincense    marangaberry     ejectbutton       metronome     liechiberry     iapapaberry 
+             72               6               4              68             333               5             321 
+  blunderpolicy      leppaberry     chartiberry     sitrusberry        lumberry     laggingtail    brightpowder 
+              4               4              18             436             257              32              41 
+     rockmemory      choiceband       normalgem 
+              1              70               4 </code></pre>
+<!-- rnb-output-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+<!-- rnb-text-end -->
 
-<div id="rmd-source-code">LS0tDQp0aXRsZTogIlIgTm90ZWJvb2siDQpvdXRwdXQ6IGh0bWxfbm90ZWJvb2sNCi0tLQ0KDQoNCmBgYHtyfQ0KbGlicmFyeShqc29ubGl0ZSkNCmBgYA0KDQoNCmBgYHtyfQ0KeCA8LSBmcm9tSlNPTigiaHR0cHM6Ly93d3cuc21vZ29uLmNvbS9zdGF0cy8yMDIwLTAxL2NoYW9zL2dlbjhvdS0wLmpzb24iLCBzaW1wbGlmeURhdGFGcmFtZSA9IFRSVUUpDQpgYGANCg0KYGBge3J9DQp4JGluZm8NCmBgYA0KDQoNCmh0dHBzOi8vd3d3LnNtb2dvbi5jb20vZm9ydW1zL3RocmVhZHMvb2ZmaWNpYWwtc21vZ29uLXVuaXZlcnNpdHktdXNhZ2Utc3RhdGlzdGljcy1kaXNjdXNzaW9uLXRocmVhZC1tay0yLjM1MDg1MDIvDQoNCkNoZWNrcyAmIGNvdW50ZXJzIC0gYXJyYXkgb2YgMyBudW1iZXJzIGZvciBlYWNoIHBva2Vtb24uIFdoYXQgZG8gdGhleSByZXByZXNlbnQ/DQoNCk51bWJlciBuIG9mIHRpbWVzIHRoZSBtYXRjaHVwIG9jY3VycmVkIChkb24ndCBjb3VudCBVLVR1cm4gS09zIG9yIGZvcmNlLW91dHMpDQpUaGUgZnJhY3Rpb24gcCBvZiB0aW1lcyB0aGUgY291bnRlciBnb3QgdGhlIEtPIG9yIGNhdXNlZCBhIHN3aXRjaA0KU3RhbmRhcmQgZGV2aWF0aW9uIGZvciB0aGUgcHJldmlvdXMgdmFsdWU6IHNxcnQocCooMS4wLXApL24pDQoNCmBgYHtyfQ0KeCRkYXRhJE1hbmRpYnV6eiRgQ2hlY2tzIGFuZCBDb3VudGVyc2AkQ2xlZmFibGUNCmBgYA0KDQpgYGB7cn0NCngkZGF0YSRNYW5kaWJ1enokYFZpYWJpbGl0eSBDZWlsaW5nYA0KYGBgDQoNClRlYW1tYXRlcw0KdGhlIG51bWJlciBpbiB0aGUgSlNPTiBpcyB0aGUgbnVtYmVyIGluIHRoZSBUWFQgdGltZXMgdGhlIHBva2Vtb24ncyB1c2FnZSAoc2VlIGNodW5rIGJlbG93KQ0KYGBge3J9DQp4JGRhdGEkTWFuZGlidXp6JFRlYW1tYXRlcyRTd29vYmF0DQpgYGANCg0KUG9rZW1vbiB1c2FnZSBpcyBiZXN0IGNhbGN1bGF0ZWQgYnkgc3VtbWluZyBhYmlsaXRpZXMgLSBkbyBjb21wYXJlIHRoaXMgd2l0aCB1c2FnZSB0eHQNCmBgYHtyfQ0KeCRkYXRhJE1hbmRpYnV6eiRBYmlsaXRpZXMkYmlncGVja3MNCngkZGF0YSRNYW5kaWJ1enokQWJpbGl0aWVzJG92ZXJjb2F0DQp4JGRhdGEkTWFuZGlidXp6JEFiaWxpdGllcyR3ZWFrYXJtb3INCmBgYA0KDQo=</div>
+<div id="rmd-source-code">LS0tDQp0aXRsZTogIlIgTm90ZWJvb2siDQpvdXRwdXQ6IGh0bWxfbm90ZWJvb2sNCi0tLQ0KDQoNCmBgYHtyfQ0KbGlicmFyeShqc29ubGl0ZSkNCmBgYA0KDQoNCmBgYHtyfQ0KeCA8LSBmcm9tSlNPTigiaHR0cHM6Ly93d3cuc21vZ29uLmNvbS9zdGF0cy8yMDIwLTAxL2NoYW9zL2dlbjhvdS0wLmpzb24iLCBzaW1wbGlmeURhdGFGcmFtZSA9IFRSVUUpDQpgYGANCg0KYGBge3J9DQp4JGluZm8NCmBgYA0KDQoNCmh0dHBzOi8vd3d3LnNtb2dvbi5jb20vZm9ydW1zL3RocmVhZHMvb2ZmaWNpYWwtc21vZ29uLXVuaXZlcnNpdHktdXNhZ2Utc3RhdGlzdGljcy1kaXNjdXNzaW9uLXRocmVhZC1tay0yLjM1MDg1MDIvDQoNCkNoZWNrcyAmIGNvdW50ZXJzIC0gYXJyYXkgb2YgMyBudW1iZXJzIGZvciBlYWNoIHBva2Vtb24uIFdoYXQgZG8gdGhleSByZXByZXNlbnQ/DQoNCk51bWJlciBuIG9mIHRpbWVzIHRoZSBtYXRjaHVwIG9jY3VycmVkIChkb24ndCBjb3VudCBVLVR1cm4gS09zIG9yIGZvcmNlLW91dHMpDQpUaGUgZnJhY3Rpb24gcCBvZiB0aW1lcyB0aGUgY291bnRlciBnb3QgdGhlIEtPIG9yIGNhdXNlZCBhIHN3aXRjaA0KU3RhbmRhcmQgZGV2aWF0aW9uIGZvciB0aGUgcHJldmlvdXMgdmFsdWU6IHNxcnQocCooMS4wLXApL24pDQoNCmBgYHtyfQ0KeCRkYXRhJE1hbmRpYnV6eiRgQ2hlY2tzIGFuZCBDb3VudGVyc2AkQ2xlZmFibGUNCmBgYA0KDQpgYGB7cn0NCngkZGF0YSRNYW5kaWJ1enokYFZpYWJpbGl0eSBDZWlsaW5nYA0KYGBgDQoNClRlYW1tYXRlcw0KdGhlIG51bWJlciBpbiB0aGUgSlNPTiBpcyB0aGUgbnVtYmVyIGluIHRoZSBUWFQgdGltZXMgdGhlIHBva2Vtb24ncyB1c2FnZSAoc2VlIGNodW5rIGJlbG93KQ0KYGBge3J9DQp4JGRhdGEkTWFuZGlidXp6JFRlYW1tYXRlcyRTd29vYmF0DQpgYGANCg0KUG9rZW1vbiB1c2FnZSBpcyBiZXN0IGNhbGN1bGF0ZWQgYnkgc3VtbWluZyBhYmlsaXRpZXMgLSBkbyBjb21wYXJlIHRoaXMgd2l0aCB1c2FnZSB0eHQNCmBgYHtyfQ0KeCRkYXRhJE1hbmRpYnV6eiRBYmlsaXRpZXMkYmlncGVja3MNCngkZGF0YSRNYW5kaWJ1enokQWJpbGl0aWVzJG92ZXJjb2F0DQp4JGRhdGEkTWFuZGlidXp6JEFiaWxpdGllcyR3ZWFrYXJtb3INCmBgYA0KDQpgYGB7cn0NCngkZGF0YSREdXJhbHVkb24kYFJhdyBjb3VudGANCmBgYA0KDQpgYGB7cn0NCnVubGlzdCh4JGRhdGEkTWFuZGlidXp6JEl0ZW1zKQ0KDQpgYGANCg0K</div>
 
 
 
