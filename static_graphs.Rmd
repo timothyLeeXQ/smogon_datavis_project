@@ -12,6 +12,7 @@ library(dplyr)
 library(stringr)
 library(rvest)
 library(purrr)
+library(ggplot2)
 ```
 
 ```{r}
@@ -49,7 +50,7 @@ df_usage$`Raw %` <- as.double(df_usage$`Raw %`)
 df_usage$Real <- as.integer(df_usage$Real)
 df_usage$`Real %` <- as.double(df_usage$`Real %`)
 
-df_usage
+#df_usage
 ```
 
 ```{r}
@@ -63,11 +64,130 @@ head(df_dex)
 
 ```{r}
 # type df
-df_usage_type <- left_join(df_usage, df_dex, by = c("Pokemon" = "Name"))
-head(df_usage_type)
+
+df_type <- df_dex %>%
+  select(Name, Type) %>%
+  mutate(Name = str_replace_all(.data$Name, "Galarian.+", "-Galar")) %>%
+  mutate(Name = str_replace_all(.data$Name, "Alolan.+", "-Alola")) %>%
+  mutate(Name = str_replace_all(.data$Name, "Mega.+", "-Mega")) %>%
+  mutate(Name = str_replace(.data$Name, "^-Mega", "Meganium")) %>%
+  mutate(Name = str_remove_all(.data$Name, "Zen Mode|Standard Mode")) %>%
+  mutate(Name = str_replace_all(.data$Name, "Eiscue.+", "Eiscue")) %>%
+  mutate(Name = str_replace_all(.data$Name, " Rotom$", "")) %>%
+  mutate(Name = str_replace_all(.data$Name, "Rotom", "Rotom-")) %>%
+  mutate(Name = str_replace_all(.data$Name, "Rotom-$", "Rotom")) %>%
+  mutate(Name = str_replace_all(.data$Name, "Morpeko.+", "Morpeko")) %>%
+  mutate(Name = str_replace_all(.data$Name, "Basculin.+", "Basculin")) %>%
+  mutate(Name = str_replace_all(.data$Name, "Aegislash.+", "Aegislash")) %>%
+  mutate(Name = str_replace_all(.data$Name, "Toxtricity.+", "Toxtricity")) %>%
+  mutate(Name = str_replace_all(.data$Name, " Kyurem$", "")) %>%
+  mutate(Name = str_replace_all(.data$Name, "Kyurem", "Kyurem-")) %>%
+  mutate(Name = str_replace_all(.data$Name, "Kyurem-$", "Kyurem")) %>%
+  mutate(Name = str_replace_all(.data$Name, "IndeedeeMale", "Indeedee")) %>%
+  mutate(Name = str_replace_all(.data$Name, "IndeedeeFemale", "Indeedee-F")) %>%
+  mutate(Name = str_replace_all(.data$Name, "Keldeo.+", "Keldeo")) %>%
+  mutate(Name = str_replace_all(.data$Name, "Mr\\. ", "Mr.\\")) %>%
+  mutate(Name = str_replace_all(.data$Name, "Mime ", "Mime")) %>%
+  mutate(Name = str_replace_all(.data$Name, "Type: Null", "Type:Null")) %>%
+  distinct()
+
+
+df_type$Name[8] <- "Charizard-Mega X"
+df_type$Name[9] <- "Charizard-Mega Y"
+df_type$Name[190] <- "Mewtwo-Mega X"
+df_type$Name[191] <- "Mewtwo-Mega Y"
+
 ```
 
 ```{r}
-filter(df_usage_type, is.na(Type))
+
+df_usage_type <- left_join(df_usage, df_type, by = c("Pokemon" = "Name"))
+head(df_usage_type)
+```
+
+
+
+
+```{r}
+#NA check
+x <- filter(df_usage_type, is.na(Type))
+```
+
+```{r}
+types1 <- c("Grass",
+           "Fire",
+           "Water",
+           "Electric",
+           "Ground",
+           "Rock",
+           "Steel",
+           "Flying",
+           "Fighting",
+           "Psychic",
+           "Steel",
+           "Bug",
+           "Poison",
+           "Dragon",
+           "Ghost",
+           "Dark",
+           "Normal", 
+           "Fairy",
+           "Ice")
+types2 <- c(types1, "")
+types1_regex <- paste(types1, collapse = "|")
+types2_regex <- paste(types2, collapse = "|")
+types_regex_capture <- paste("(",
+                             types1_regex,
+                             ")",
+                             "(",
+                             types2_regex,
+                             ")", sep = "", collapse = ""
+                             )
+
+df_usage_type2 <- extract(df_usage_type,
+                          col = Type,
+                          into = c("Type 1", "Type 2"),
+                          types_regex_capture)
+```
+
+```{r}
+#NA check
+y <- filter(df_usage_type2, is.na(`Type 1`))
+```
+
+```{r}
+df_usage_type_long <- pivot_longer(df_usage_type2,
+                                   cols = c("Type 1", "Type 2"),
+                                   names_to = "type_num",
+                                   values_to = "Type") %>%
+  filter(Type != "")
+```
+
+```{r}
+df_usage_type_plot <- df_usage_type_long %>% 
+  group_by(Type) %>%
+  summarise(sum = sum(`Usage %`)) %>%
+  arrange(Type)
+
+x <- ggplot(df_usage_type_plot, aes(x = .data$sum, y = .data$Type, fill = Type)) +
+  geom_col() + 
+  theme_minimal() +
+  labs(x = "Usage %", 
+       y = "Type") +
+  scale_fill_manual(values = c("#A6B91A", "#705746", "#6F35FC", "#F7D02C",
+                               "#D685AD", "#C22E28", "#EE8130", "#A98FF3",
+                               "#735797", "#7AC74C", "#E2BF65", "#96D9D6",
+                               "#A8A77A", "#A33EA1", "#F95587", "#B6A136",
+                               "#B7B7CE", "#6390F0"
+                               )
+                    ) +
+  theme(legend.position = "none")
+
+x
+  
+```
+
+```{r}
+DT::datatable(df_usage_type2)
 ```
 
