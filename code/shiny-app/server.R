@@ -1,6 +1,127 @@
 library(shiny)
 library(shinydashboard)
+library(tidyr)
+library(stringr)
+library(dplyr)
+library(readr)
+library(highcharter)
 
 shinyServer(function(input, output, session) {
+    usage_input <- reactive({
+        month_chosen <- paste(format(input$month_select, "%Y-%m"))
+        gen_chosen <- paste(input$gen_select)
+        format_chosen <- paste(input$format_select)
+        weighting_chosen <- paste(input$skill_weighting_select) %>%
+          str_replace_all(pattern = fixed("(all formats except current gen OU)"),
+               replacement = "") %>%
+          str_replace_all(pattern = fixed("(for current gen OU)"),
+               replacement = "")
+
+        usage_endpoint <- paste("https://www.smogon.com/stats/",
+                                month_chosen, "/",
+                                gen_chosen, format_chosen, "-",
+                                weighting_chosen, ".txt") %>%
+          str_replace_all(pattern = "[[:space:]]", replacement = "") %>%
+          str_to_lower()
+
+      usage <- tryCatch({
+        read_lines(usage_endpoint)
+        }, error = function(error) {
+        return(NULL)
+        })
+
+      usage
+    })
+
+    df_usage <- reactive({
+      usage <- usage_input()
+      if (is.null(usage)) {
+        df_usage <- data.frame(integer(), character(), numeric(),
+                               integer(), numeric(), integer(), numeric(),
+                               stringsAsFactors = FALSE)
+        colnames(df_usage) <- c("Rank", "Pokemon", "Usage %",
+                                "Raw", "Raw %", "Real", "Real %")
+      } else {
+        df_usage <- usage[6:(length(usage) - 1)] %>%
+        data.frame(stringsAsFactors = FALSE) %>%
+        separate(., col = ., sep = "\\|+", into = as.character(c(1:9))) %>%
+        select(as.character(c(2:8)))
+
+        #Remove spaces in columns and percent signs
+        df_usage <- apply(df_usage, 2, str_remove_all, pattern = "[[:space:]]|%") %>%
+          data.frame(stringsAsFactors = FALSE)
+
+        colnames(df_usage) <- c("Rank", "Pokemon", "Usage %", "Raw", "Raw %",
+                                "Real", "Real %")
+
+        df_usage$Rank <- as.integer(df_usage$Rank)
+        df_usage$`Usage %` <- as.double(df_usage$`Usage %`)
+        df_usage$Raw <- as.integer(df_usage$Raw)
+        df_usage$`Raw %` <- as.double(df_usage$`Raw %`)
+        df_usage$Real <- as.integer(df_usage$Real)
+        df_usage$`Real %` <- as.double(df_usage$`Real %`)
+      }
+
+      df_usage_type <- left_join(df_usage, df_dex, by = c("Pokemon" = "Name"))
+
+      df_usage_types_sep <- tidyr::extract(df_usage_type,
+                                           col = Type,
+                                           into = c("Type 1", "Type 2"),
+                                           types_regex_capture)
+      df_usage_types_sep
+    })
+
+    df_usage_plot <- reactive({
+      df_usage <- df_usage()
+      df_usage_type_plot <- pivot_longer(df_usage,
+                                         cols = c("Type 1", "Type 2"),
+                                         names_to = "type_num",
+                                         values_to = "Type") %>%
+        filter(Type != "") %>%
+        group_by(Type) %>%
+        summarise_at(vars(`Usage %`:`Real %`), sum)
+
+      if (paste(input$gen_select) == "Gen 1") {
+        df_usage_type_plot <- bind_rows(df_usage_type_plot,
+                                        data.frame("Dark", 0, 0, 0, 0, 0))
+      }
+
+      df_usage_type_plot <- df_usage_type_plot %>% arrange(Type)
+
+      df_usage_type_plot
+    })
+
+    output$usage_plot <- renderHighchart({
+      df_usage_plot <- df_usage_plot()
+      usage_plot <- hchart(df_usage_plot,
+                           type = "bar",
+                           name = "Usage %",
+                           hcaes(x = .data$Type,
+                                 y = .data$`Usage %`, color = type_colours)) %>%
+      hc_add_theme(hc_theme_elementary()) %>%
+      hc_xAxis(title = list(text = "Type")) %>%
+      hc_yAxis(title = list(text = "Usage %"))
+
+    })
+
+    output$total_battles <- renderValueBox({
+      usage <- usage_input()
+      if (is.null(usage)) {
+        total_battles <- 0
+      } else {
+        total_battles <- str_extract(usage[1], pattern = "[0-9]+")
+      }
+      valueBox("Number of Battles", total_battles)
+    })
+
+
+
+
+
     output$month_pv <- renderPrint({str(input$month_select)})
+    output$str_pv <- renderText({
+      text <- usage_input()
+      text
+    })
+
 })

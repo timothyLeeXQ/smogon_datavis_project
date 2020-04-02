@@ -18,13 +18,14 @@ library(here)
 ```
 
 ```{r}
- gen_8_ou <- "https://www.smogon.com/stats/2020-02/gen8ou-0.txt"
+gen_1_ou <- "https://www.smogon.com/stats/2020-02/gen1ou-0.txt"
+gen_8_ou <- "https://www.smogon.com/stats/2020-02/gen8ou-0.txt"
 # gen_8_ubers <- "https://www.smogon.com/stats/2020-02/gen8ubers-0.txt"
 # gen_8_national_dex <- "https://www.smogon.com/stats/2020-02/gen8nationaldex-0.txt"
 # gen_7_ou <- "https://www.smogon.com/stats/2020-02/gen7ou-0.txt"
 # gen_7_ubers <- "https://www.smogon.com/stats/2020-02/gen7ubers-0.txt"
 
-usage <- read_lines(gen_8_ou)
+usage <- read_lines(gen_1_ou)
 total_battles <- str_extract(usage[1], pattern = "[0-9]+")
 total_battles
 ```
@@ -251,24 +252,9 @@ dex_na_check <- filter(df_usage_type, is.na(Type))
 
 
 ```{r}
-types1 <- c("Grass",
-           "Fire",
-           "Water",
-           "Electric",
-           "Ground",
-           "Rock",
-           "Steel",
-           "Flying",
-           "Fighting",
-           "Psychic",
-           "Bug",
-           "Poison",
-           "Dragon",
-           "Ghost",
-           "Dark",
-           "Normal", 
-           "Fairy",
-           "Ice")
+types1 <- c("Grass", "Fire", "Water", "Electric", "Ground", "Rock", "Steel",
+           "Flying", "Fighting", "Psychic", "Bug", "Poison", "Dragon", "Ghost",
+           "Dark", "Normal", "Fairy", "Ice")
 types2 <- c(types1, "")
 types1_regex <- paste(types1, collapse = "|")
 types2_regex <- paste(types2, collapse = "|")

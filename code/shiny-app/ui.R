@@ -21,7 +21,7 @@ body <- dashboardBody(
         tabItem(
             tabName = "usage",
             fluidRow(
-                box(width = 3,
+                box(width = 2,
                     title = "Select Month:",
                     airMonthpickerInput(
                         inputId = "month_select",
@@ -30,27 +30,40 @@ body <- dashboardBody(
                         minView = "months"
                         )
                     ),
-                box(width = 3,
+                box(width = 2,
                     title = "Select Gen:",
-                    selectInput("gen", label = " ", choices = gen_vec),
+                    selectInput("gen_select", label = " ", choices = gen_vec),
                     ),
-                box(width = 3,
+                box(width = 2,
                     title = "Select Format:",
-                    selectInput("format", label = " ", choices = formats),
+                    selectInput("format_select", label = " ", choices = formats),
                     ),
                 box(width = 3,
                     title = "Select Skill Weighting:",
-                    selectInput("weighting", label = "See the FAQ if you don't know what this is",
-                                 choices = skill_ranking),
-                )
-
+                    selectInput("skill_weighting_select",
+                                label = "See the FAQ if you don't know what this is",
+                                choices = skill_ranking)
+                    ),
+                box(width = 3,
+                    title = "Select Usage Weighting:",
+                    selectInput("usage_weighting_select",
+                                label = "See the FAQ if you don't know what this is",
+                                choices = usage_weighting)
+                    )
             ),
             fluidRow(
+                valueBox("Most Used", value = "lorem ipsum", color = "orange"),
                 valueBox("Most common type", value = "placeholder_val", color = "red"),
-                valueBox("Number of Battles", value = "placeholder_val"),
-                valueBox("Most used", value = "placeholder_val", color = "orange")
+                valueBoxOutput("total_battles")
+                ),
+            fluidRow(
+                box(
+                      width = 12,
+                      title = "xxxxx",
+                      highchartOutput("usage_plot")
+                  )
                 )
-            ),
+          ),
         tabItem(
             tabName = "item",
             fluidRow(
@@ -58,12 +71,11 @@ body <- dashboardBody(
                 valueBox("Hardest Category", icon("laptop-code"), value = "placeholder")
                 ),
             fluidRow(
-                box(width = 2,
-                    title = "Choose a Category",
-                    selectInput(label = "Choose a Category",
-                                inputId = "cat_choose",
-                                choices = c("All"))
-                    )
+                box(
+                      width = 12,
+                      title = "Number of Clicks Each Student Used to Answer a Question",
+                      textOutput("str_pv")
+                  )
                 ),
             fluidRow(
                 box(width = 12,

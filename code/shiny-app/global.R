@@ -16,6 +16,13 @@ types_regex_capture <- paste("(", types1_regex, ")", "(", types2_regex,")",
                              sep = "",
                              collapse = ""
                              )
+
+type_colours <- c("#A6B91A", "#705746", "#6F35FC", "#F7D02C",
+                  "#D685AD", "#C22E28", "#EE8130", "#A98FF3",
+                  "#735797", "#7AC74C", "#E2BF65", "#96D9D6",
+                  "#A8A77A", "#A33EA1", "#F95587", "#B6A136",
+                  "#B7B7CE", "#6390F0")
+
 # Gens
 gen_vec <- paste("Gen", c(1:8))
 
@@ -32,3 +39,6 @@ formats <- c("OU", "Ubers", "UU", "RU", "NU", "PU", "LC", "Anything Goes",
 skill_ranking <- c("0", "1500",
                    "1630 (all formats except current gen OU)", "1695 (for current gen OU)",
                    "1760 (all formats except current gen OU)", "1825 (for current gen OU)")
+
+# Usage weightings
+usage_weighting <- c("Usage", "Raw", "Real")
