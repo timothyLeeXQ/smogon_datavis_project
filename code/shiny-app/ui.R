@@ -1,11 +1,4 @@
-#
-# This is the user-interface definition of a Shiny web application. You can
-# run the application by clicking 'Run App' above.
-#
-# Find out more about building applications with Shiny here:
-#
-#    http://shiny.rstudio.com/
-#
+
 library(shiny)
 library(shinydashboard)
 library(shinyWidgets)
@@ -28,23 +21,29 @@ body <- dashboardBody(
         tabItem(
             tabName = "usage",
             fluidRow(
-                box(width = 4,
+                box(width = 3,
                     title = "Select Month:",
                     airMonthpickerInput(
                         inputId = "month_select",
+                        label = " ",
                         minDate = "2014-11-01",
                         minView = "months"
                         )
                     ),
-                box(width = 4,
-                    title = "Select Format",
-                    verbatimTextOutput("month_pv", placeholder = TRUE),
+                box(width = 3,
+                    title = "Select Gen:",
+                    selectInput("gen", label = " ", choices = gen_vec),
                     ),
-                box(width = 4,
-                    title = "Select Rating",
-                    verbatimTextOutput("month_pv", placeholder = TRUE),
+                box(width = 3,
+                    title = "Select Format:",
+                    selectInput("format", label = " ", choices = formats),
+                    ),
+                box(width = 3,
+                    title = "Select Skill Weighting:",
+                    selectInput("weighting", label = "See the FAQ if you don't know what this is",
+                                 choices = skill_ranking),
                 )
-                
+
             ),
             fluidRow(
                 valueBox("Most common type", value = "placeholder_val", color = "red"),
@@ -82,13 +81,13 @@ body <- dashboardBody(
         )
     )
 )
-        
-        
-        
-        
-        
-        
-        
+
+
+
+
+
+
+
 
 
 
