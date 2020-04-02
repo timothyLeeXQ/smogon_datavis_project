@@ -24,7 +24,7 @@ type_colours <- c("#A6B91A", "#705746", "#6F35FC", "#F7D02C",
                   "#B7B7CE", "#6390F0")
 
 # Gens
-gen_vec <- paste("Gen", c(1:8))
+gen_vec <- paste("Gen", c(8:1))
 
 # Formats
 formats <- c("OU", "Ubers", "UU", "RU", "NU", "PU", "LC", "Anything Goes",

@@ -25,6 +25,7 @@ body <- dashboardBody(
                     title = "Select Month:",
                     airMonthpickerInput(
                         inputId = "month_select",
+                        value = format(Sys.Date()-31, "%Y-%m-%d"),
                         label = " ",
                         minDate = "2014-11-01",
                         minView = "months"
@@ -59,9 +60,19 @@ body <- dashboardBody(
             fluidRow(
                 box(
                       width = 12,
-                      title = "xxxxx",
-                      highchartOutput("usage_plot")
+                      title = "Usage by Type",
+                      highchartOutput("usage_plot"),
+                      textOutput("usage_plot_note")
                   )
+                ),
+            fluidRow(
+                box(width = 12,
+                    title = "Usage Table",
+                    DT::dataTableOutput("usage_table"),
+                    style = "height:600px;
+                             width:auto;
+                             overflow-y:scroll;
+                             overflow-x:scroll;")
                 )
           ),
         tabItem(
@@ -80,15 +91,6 @@ body <- dashboardBody(
             fluidRow(
                 box(width = 12,
                     title = "Class Performance for Questions in Each Category")
-                ),
-            fluidRow(
-                box(width = 12,
-                    title = "Student Performance for Each Category",
-                    DT::dataTableOutput("cat_dt"),
-                    style = "height:600px;
-                             width:auto;
-                             overflow-y:scroll;
-                             overflow-x: scroll;")
                 )
         )
     )

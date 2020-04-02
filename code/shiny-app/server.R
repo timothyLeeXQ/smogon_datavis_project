@@ -93,15 +93,26 @@ shinyServer(function(input, output, session) {
 
     output$usage_plot <- renderHighchart({
       df_usage_plot <- df_usage_plot()
-      usage_plot <- hchart(df_usage_plot,
-                           type = "bar",
-                           name = "Usage %",
-                           hcaes(x = .data$Type,
-                                 y = .data$`Usage %`, color = type_colours)) %>%
-      hc_add_theme(hc_theme_elementary()) %>%
-      hc_xAxis(title = list(text = "Type")) %>%
-      hc_yAxis(title = list(text = "Usage %"))
 
+      usage_plot <- tryCatch({
+        hchart(df_usage_plot,
+                            type = "bar",
+                            name = "Usage %",
+                            hcaes(x = .data$Type,
+                                  y = .data$`Usage %`, color = type_colours)) %>%
+        hc_add_theme(hc_theme_elementary()) %>%
+        hc_xAxis(title = list(text = "Type")) %>%
+        hc_yAxis(title = list(text = "Usage %"))
+        }, error = function(error) {
+          message("An error occurred. Did you pick a metagame that exists?")
+        })
+
+
+      usage_plot
+    })
+
+    output$usage_plot_note <- renderText({"Note: Percentages can be above 100%
+      as pokemon with two types are counted once for each type."
     })
 
     output$total_battles <- renderValueBox({
@@ -114,14 +125,18 @@ shinyServer(function(input, output, session) {
       valueBox("Number of Battles", total_battles)
     })
 
+    output$usage_table <- DT::renderDataTable({
+      df_usage <- df_usage() %>%
+        select(1, 8, 2, 9, 10, everything()) %>%
+        rename(`Stat Total` = .data$Total)
 
-
-
-
-    output$month_pv <- renderPrint({str(input$month_select)})
-    output$str_pv <- renderText({
-      text <- usage_input()
-      text
+      dt_usage_table <- DT::datatable(df_usage,
+                                      options = list(pageLength = nrow(df_usage),
+                                                     scrollX = TRUE,
+                                                     scrollY = 400,
+                                                     fixedHeader=TRUE)
+                                                     )
+      dt_usage_table
     })
 
 })
