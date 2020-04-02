@@ -78,19 +78,19 @@ body <- dashboardBody(
         tabItem(
             tabName = "item",
             fluidRow(
-                valueBox("Hardest Question", icon("question"), value = "placeholder"),
-                valueBox("Hardest Category", icon("laptop-code"), value = "placeholder")
+                valueBox("xxxxx", icon("question"), value = "placeholder"),
+                valueBox("yyyyy", icon("laptop-code"), value = "placeholder")
                 ),
             fluidRow(
                 box(
                       width = 12,
-                      title = "Number of Clicks Each Student Used to Answer a Question",
-                      textOutput("str_pv")
+                      title = "zzzzz",
+                      textOutput("")
                   )
                 ),
             fluidRow(
                 box(width = 12,
-                    title = "Class Performance for Questions in Each Category")
+                    title = "qqqqq")
                 )
         )
     )

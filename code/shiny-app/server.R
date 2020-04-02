@@ -104,7 +104,7 @@ shinyServer(function(input, output, session) {
         hc_xAxis(title = list(text = "Type")) %>%
         hc_yAxis(title = list(text = "Usage %"))
         }, error = function(error) {
-          message("An error occurred. Did you pick a metagame that exists?")
+          message("An error occurred. Did you pick a game format that exists?")
         })
 
 
@@ -140,3 +140,10 @@ shinyServer(function(input, output, session) {
     })
 
 })
+
+## TO DO:
+# 1. Fill in infobox values
+# 2. Implement usage weighting
+# 3. Add colour by type to DT
+# 4. Change Most common type infobox colour to be based on Type
+# 4. Fill in README.md
