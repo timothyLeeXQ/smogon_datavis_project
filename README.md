@@ -73,6 +73,7 @@ data
 
 **Stretch Goals:**
 1. Provide network visualisation and statistics based on checks/counters data
+2. Provide ability to visualise usage trends over time
 
 ## Links
 * [Smogon Stats](https://www.smogon.com/stats/)
