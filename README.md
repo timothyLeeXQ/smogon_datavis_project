@@ -1,5 +1,7 @@
 # Smogon Stats Data Visualisation
 
+[Shiny App HERE](https://timlxq.shinyapps.io/smogon_viz_project/)
+
 ## About the data
 Smogon is a competitive Pokemon community that hosts a popular online Pokemon
 battle simulator. Every matchmade game played on the servers is logged, and a
