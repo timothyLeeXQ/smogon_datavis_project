@@ -2,7 +2,7 @@
 library(shiny)
 library(shinydashboard)
 library(shinyWidgets)
-
+library(highcharter)
 
 
 header <- dashboardHeader(title = "Smogon Stats UI")
@@ -53,8 +53,8 @@ body <- dashboardBody(
                     )
             ),
             fluidRow(
-                valueBox("Most Used", value = "lorem ipsum", color = "orange"),
-                valueBox("Most common type", value = "placeholder_val", color = "red"),
+                valueBoxOutput("common_type"),
+                valueBoxOutput("most_used_mon"),                
                 valueBoxOutput("total_battles")
                 ),
             fluidRow(

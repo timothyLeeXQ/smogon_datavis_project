@@ -25,7 +25,7 @@ gen_8_ou <- "https://www.smogon.com/stats/2020-02/gen8ou-0.txt"
 # gen_7_ou <- "https://www.smogon.com/stats/2020-02/gen7ou-0.txt"
 # gen_7_ubers <- "https://www.smogon.com/stats/2020-02/gen7ubers-0.txt"
 
-usage <- read_lines(gen_1_ou)
+usage <- read_lines(gen_8_ou)
 total_battles <- str_extract(usage[1], pattern = "[0-9]+")
 total_battles
 ```
@@ -307,6 +307,11 @@ type_ggplot <- ggplot(df_usage_type_plot, aes(x = .data$`Usage %`, y = .data$Typ
 type_ggplot
   
 ```
+
+```{r}
+
+```
+
 
 ```{r}
 hchart(df_usage_type_plot,

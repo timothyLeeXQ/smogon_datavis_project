@@ -1,0 +1,13 @@
+name: smogon_viz_project
+title: smogon_viz_project
+username:
+account: timlxq
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 2049726
+bundleId: 2963803
+url: https://timlxq.shinyapps.io/smogon_viz_project/
+when: 1585911385.13726
+asMultiple: FALSE
+asStatic: FALSE
+ignoredFiles: dex.RDS

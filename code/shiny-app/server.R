@@ -93,16 +93,17 @@ shinyServer(function(input, output, session) {
 
     output$usage_plot <- renderHighchart({
       df_usage_plot <- df_usage_plot()
+      usage_weighting_chosen <- paste(input$usage_weighting_select, "%")
 
       usage_plot <- tryCatch({
         hchart(df_usage_plot,
-                            type = "bar",
-                            name = "Usage %",
-                            hcaes(x = .data$Type,
-                                  y = .data$`Usage %`, color = type_colours)) %>%
+               type = "bar",
+               name = usage_weighting_chosen,
+               hcaes(x = .data$Type,
+                     y = .data[[usage_weighting_chosen]], color = type_colours)) %>%
         hc_add_theme(hc_theme_elementary()) %>%
         hc_xAxis(title = list(text = "Type")) %>%
-        hc_yAxis(title = list(text = "Usage %"))
+        hc_yAxis(title = list(text = usage_weighting_chosen))
         }, error = function(error) {
           message("An error occurred. Did you pick a game format that exists?")
         })
@@ -112,7 +113,8 @@ shinyServer(function(input, output, session) {
     })
 
     output$usage_plot_note <- renderText({"Note: Percentages can be above 100%
-      as pokemon with two types are counted once for each type."
+      as pokemon with two types are counted once for each type, and Percentages
+      refers to proportions of teams with using a particuar Pokemon."
     })
 
     output$total_battles <- renderValueBox({
@@ -123,6 +125,34 @@ shinyServer(function(input, output, session) {
         total_battles <- str_extract(usage[1], pattern = "[0-9]+")
       }
       valueBox("Number of Battles", total_battles)
+    })
+
+    output$common_type <- renderValueBox({
+      usage <- usage_input()
+      df_usage_plot <- df_usage_plot()
+      usage_weighting_chosen <- paste(input$usage_weighting_select, "%")
+      if (is.null(usage)) {
+        most_common_type <- "Blank"
+      } else {
+        df_usage_sort_type <- arrange(df_usage_plot,
+                                      desc(.data[[usage_weighting_chosen]]))
+        most_common_type <- df_usage_sort_type[["Type"]][[1]]
+      }
+      valueBox("Most Common Type", most_common_type)
+    })
+
+    output$most_used_mon <- renderValueBox({
+      usage <- usage_input()
+      df_usage <- df_usage()
+      usage_weighting_chosen <- paste(input$usage_weighting_select, "%")
+      if (is.null(usage)) {
+        most_common_type <- "Blank"
+      } else {
+        df_usage_sort_mon <- arrange(df_usage,
+                                     desc(.data[[usage_weighting_chosen]]))
+        most_common_type <- df_usage_sort_mon[["Pokemon"]][[1]]
+      }
+      valueBox("Most Common Pokemon", most_common_type)
     })
 
     output$usage_table <- DT::renderDataTable({
@@ -142,8 +172,6 @@ shinyServer(function(input, output, session) {
 })
 
 ## TO DO:
-# 1. Fill in infobox values
-# 2. Implement usage weighting
 # 3. Add colour by type to DT
 # 4. Change Most common type infobox colour to be based on Type
 # 4. Fill in README.md
