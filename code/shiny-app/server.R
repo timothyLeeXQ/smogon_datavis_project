@@ -165,13 +165,10 @@ shinyServer(function(input, output, session) {
                                                      scrollX = TRUE,
                                                      scrollY = 400,
                                                      fixedHeader=TRUE)
-                                                     )
+                                                   ) %>%
+        DT::formatStyle(c("Type 1", "Type 2"),
+                        backgroundColor = DT::styleEqual(names(type_colours), type_colours))
       dt_usage_table
     })
 
 })
-
-## TO DO:
-# 3. Add colour by type to DT
-# 4. Change Most common type infobox colour to be based on Type
-# 4. Fill in README.md

@@ -95,7 +95,7 @@ add_to_dex <- function(number, name, type, total, hp,
                                def, spatk, spdef, speed),
                           stringsAsFactors = FALSE
   )
-  
+
   colnames(dex_entry) <- colnames(df_dex)
   dex_entry
 }
@@ -158,9 +158,12 @@ df_dex <- bind_rows(df_dex,
                     )
 
 # Types data for splitting dex types from dex
-types1 <- c("Grass", "Fire", "Water", "Electric", "Ground", "Rock", "Steel",
-            "Flying", "Fighting", "Psychic", "Bug", "Poison", "Dragon",
-            "Ghost", "Dark", "Normal", "Fairy", "Ice")
+types1 <- types1 <- c("Bug", "Dark", "Dragon", "Electric",
+                      "Fairy", "Fighting", "Fire", "Flying",
+                      "Ghost", "Grass", "Ground", "Ice",
+                      "Normal", "Poison", "Psychic", "Rock",
+                      "Steel", "Water")
+
 types2 <- c(types1, "")
 types1_regex <- paste(types1, collapse = "|")
 types2_regex <- paste(types2, collapse = "|")
@@ -174,6 +177,7 @@ type_colours <- c("#A6B91A", "#705746", "#6F35FC", "#F7D02C",
                   "#735797", "#7AC74C", "#E2BF65", "#96D9D6",
                   "#A8A77A", "#A33EA1", "#F95587", "#B6A136",
                   "#B7B7CE", "#6390F0")
+names(type_colours) <- types1
 
 # Gens
 gen_vec <- paste("Gen", c(8:1))
