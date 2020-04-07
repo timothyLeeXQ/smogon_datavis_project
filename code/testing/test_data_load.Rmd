@@ -6,17 +6,64 @@ output: html_notebook
 
 ```{r}
 library(jsonlite)
-```
-
-
-```{r}
-x <- fromJSON("https://www.smogon.com/stats/2020-01/chaos/gen8ou-0.json", simplifyDataFrame = TRUE)
+library(tidyr)
+library(readr)
+library(stringr)
 ```
 
 ```{r}
-x$info
+gen_8ou_0 <- fromJSON("https://www.smogon.com/stats/2020-01/chaos/gen8ou-0.json", simplifyDataFrame = TRUE)
+gen_8ou_1500 <- fromJSON("https://www.smogon.com/stats/2020-01/chaos/gen8ou-1500.json", simplifyDataFrame = TRUE)
 ```
 
+```{r}
+gen_8ou_0$info
+```
+
+```{r}
+moveset_data_get <- function(x, pokemon, attribute) {
+  weighted_count <- sum(unlist(x$data[[pokemon]][["Abilities"]]))
+  moveset_data_raw <- unlist(x$data[[pokemon]][[attribute]]) %>% 
+    sort(decreasing = TRUE)
+  
+  moveset_data_weighted <- moveset_data_raw/weighted_count
+  moveset_data_weighted*100
+}
+```
+
+## Abilities
+```{r}
+abilities <- moveset_data_get(gen_8ou_1500, "Dragapult", "Abilities")
+
+format(abilities, scientific = FALSE)
+```
+
+## Items
+```{r}
+items <- moveset_data_get(gen_8ou_1500, "Dragapult", "Items")
+
+format(items, scientific = FALSE)[1:5]
+```
+
+## Spreads
+```{r}
+spreads <- moveset_data_get(gen_8ou_1500, "Dragapult", "Spreads")
+
+format(spreads, scientific = FALSE)[1:5]
+```
+
+## Moves
+```{r}
+moves <- moveset_data_get(gen_8ou_1500, "Dragapult", "Moves")
+
+format(moves, scientific = FALSE)[1:5]
+```
+
+## Teammates
+```{r}
+teammates <- moveset_data_get(gen_8ou_1500, "Dragapult", "Teammates")
+format(teammates, scientific = FALSE)[1:5]
+```
 
 https://www.smogon.com/forums/threads/official-smogon-university-usage-statistics-discussion-thread-mk-2.3508502/
 
@@ -26,33 +73,30 @@ Number n of times the matchup occurred (don't count U-Turn KOs or force-outs)
 The fraction p of times the counter got the KO or caused a switch
 Standard deviation for the previous value: sqrt(p*(1.0-p)/n)
 
+
 ```{r}
-x$data$Mandibuzz$`Checks and Counters`$Clefable
+format(gen_8ou_0$data$Dragapult$`Checks and Counters`$Grimmsnarl, scientific = FALSE)
 ```
 
+
 ```{r}
-x$data$Mandibuzz$`Viability Ceiling`
+usage <- read_file("https://www.smogon.com/stats/2020-01/moveset/gen8ou-0.txt") %>%
+  str_remove_all("\t|\n") %>%
+  str_split(fixed("+----------------------------------------+")) %>%
+  unlist()
+
+usage[1:20]
+
+#x <- read_tsv(usage, col_names = FALSE)
+
 ```
 
-Teammates
-the number in the JSON is the number in the TXT times the pokemon's usage (see chunk below)
-```{r}
-x$data$Mandibuzz$Teammates$Swoobat
-```
 
-Pokemon usage is best calculated by summing abilities - do compare this with usage txt
-```{r}
-x$data$Mandibuzz$Abilities$bigpecks
-x$data$Mandibuzz$Abilities$overcoat
-x$data$Mandibuzz$Abilities$weakarmor
-```
+
+
 
 ```{r}
-x$data$Duraludon$`Raw count`
-```
-
-```{r}
-unlist(x$data$Mandibuzz$Items)
-
+x$data$Dragapult$`Viability Ceiling`
+# On viability ceiling: https://www.smogon.com/forums/threads/viability-ceiling-a-measure-of-how-far-a-pokemon-can-take-you.3546373/
 ```
 

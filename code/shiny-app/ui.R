@@ -37,7 +37,7 @@ body <- dashboardBody(
                     selectInput("gen_select", label = " ", choices = gen_vec),
                     ),
                 box(width = 2,
-                    title = "Select Format:",
+                    title = "Select Tier/Format:",
                     selectInput("format_select", label = " ", choices = formats),
                     ),
                 box(width = 3,
