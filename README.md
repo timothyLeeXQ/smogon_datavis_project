@@ -62,8 +62,8 @@ tactics?
 **Done:**
 1. Import and adapt full dex to provide type and stat data for Pokemon
 2. Interactive dashboard for Usage Statistics documents
-  * Graph for Usage by types
-  * Table for raw usage % data
+    * Graph for Usage by types
+    * Table for raw usage % data
 3. Create FAQ
 
 **To do for MVP:**
