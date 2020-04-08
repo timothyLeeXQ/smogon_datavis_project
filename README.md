@@ -64,11 +64,11 @@ tactics?
 2. Interactive dashboard for Usage Statistics documents
   - Graph for Usage by types
   - Table for raw usage % data
+3. Create FAQ
 
 **To do for MVP:**
-1. Create FAQ
-2. Dashboard to access basic metagame data
-3. Adapt Usage statistics dashboard to provide more specific access to monotype
+1. Dashboard to access basic metagame data
+2. Adapt Usage statistics dashboard to provide more specific access to monotype
 data
 
 **Stretch Goals:**
