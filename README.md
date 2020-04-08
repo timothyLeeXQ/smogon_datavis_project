@@ -64,6 +64,7 @@ tactics?
 2. Interactive dashboard for Usage Statistics documents
   - Graph for Usage by types
   - Table for raw usage % data
+  
 3. Create FAQ
 
 **To do for MVP:**
