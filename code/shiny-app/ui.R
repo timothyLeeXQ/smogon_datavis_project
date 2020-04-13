@@ -10,8 +10,9 @@ header <- dashboardHeader(title = "Smogon Stats Viz")
 
 sidebar <- dashboardSidebar(
     sidebarMenu(
-        menuItem("Usage Stats", tabName = "usage", icon = icon("chess")),
-        menuItem("Moveset", tabName = "moveset", icon = icon("shopping-bag")),
+        menuItem("Usage Stats", tabName = "usage", icon = icon("chart-bar")),
+        menuItem("Usage Comparison", tabName = "usage_2", icon = icon("table")),
+        menuItem("Moveset", tabName = "moveset", icon = icon("user-cog")),
         menuItem("FAQ", tabName = "FAQ", icon = icon("question"))
     )
 )
@@ -76,6 +77,73 @@ body <- dashboardBody(
                              overflow-y:scroll;
                              overflow-x:scroll;")
                 )
+            ),
+        tabItem(
+            tabName = "usage_2",
+            fluidRow(
+                box(width = 2,
+                    title = "Select Month 1:",
+                    airMonthpickerInput(
+                        inputId = "month_select_2a",
+                        value = format(Sys.Date()-31, "%Y-%m-%d"),
+                        label = " ",
+                        minDate = "2014-11-01",
+                        maxDate = format(Sys.Date()-31, "%Y-%m-%d"),
+                        minView = "months"
+                        )
+                    ),
+                box(width = 2,
+                    title = "Select Gen 1:",
+                    selectInput("gen_select_2a", label = " ", choices = gen_vec),
+                    ),
+                box(width = 2,
+                    title = "Select Tier/Format 1:",
+                    selectInput("format_select_2a", label = " ", choices = formats),
+                    ),
+                box(width = 3,
+                    title = "Select Skill Weighting 1:",
+                    selectInput("skill_weighting_select_2a",
+                                label = "See the FAQ if you don't know what this is",
+                                choices = skill_ranking)
+                    ),
+                box(width = 3,
+                    title = "Select Usage Weighting:",
+                    selectInput("usage_weighting_select_2",
+                                label = "See the FAQ if you don't know what this is",
+                                choices = usage_weighting)
+                    )
+            ),
+            fluidRow(
+                box(width = 2,
+                    title = "Select Month 2:",
+                    airMonthpickerInput(
+                        inputId = "month_select_2b",
+                        value = format(Sys.Date()-31, "%Y-%m-%d"),
+                        label = " ",
+                        minDate = "2014-11-01",
+                        maxDate = format(Sys.Date()-31, "%Y-%m-%d"),
+                        minView = "months"
+                        )
+                    ),
+                box(width = 2,
+                    title = "Select Gen 2:",
+                    selectInput("gen_select_2b", label = " ", choices = gen_vec),
+                    ),
+                box(width = 2,
+                    title = "Select Tier/Format 2:",
+                    selectInput("format_select_2b", label = " ", choices = formats),
+                    ),
+                box(width = 3,
+                    title = "Select Skill Weighting 2:",
+                    selectInput("skill_weighting_select_2b",
+                                label = "See the FAQ if you don't know what this is",
+                                choices = skill_ranking)
+                    )
+            ),
+            fluidRow(
+                box(width = 12,
+                    title = "Usage Comparison")
+            )
           ),
         tabItem(
             tabName = "moveset",
