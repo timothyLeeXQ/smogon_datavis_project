@@ -90,6 +90,7 @@ df_dex$Name[9] <- "Charizard-Mega-Y"
 df_dex$Name[190] <- "Mewtwo-Mega-X"
 df_dex$Name[191] <- "Mewtwo-Mega-Y"
 
+
 add_to_dex <- function(number, name, type, total, hp,
                        atk, def, spatk, spdef, speed) {
   dex_entry <- data.frame(list(number, name, type, total, hp, atk,
@@ -157,6 +158,9 @@ df_dex <- bind_rows(df_dex,
                     add_to_dex(743, "Ribombee-Totem", "BugFairy", 464, 60, 55, 60, 95, 70, 124),
                     add_to_dex(735, "Gumshoos-Totem", "Normal", 418, 88, 110, 60, 55, 60, 45)
                     )
+
+# Remove Wishiwashi school form
+df_dex <- slice(df_dex, -870)
 
 # Types data for splitting dex types from dex
 types1 <- types1 <- c("Bug", "Dark", "Dragon", "Electric",

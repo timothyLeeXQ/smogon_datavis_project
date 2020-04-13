@@ -6,7 +6,7 @@ library(rvest)
 
 df_dex <- read_html("https://pokemondb.net/pokedex/all") %>%
   html_node(xpath = '//*[@id="pokedex"]') %>%
-  html_table() %>%   
+  html_table() %>%
   mutate(Name = str_replace_all(.data$Name, "é", "e")) %>%
   mutate(Name = str_replace_all(.data$Name, "♀", "F")) %>%
   mutate(Name = str_replace_all(.data$Name, "♂", "M")) %>%
@@ -93,7 +93,7 @@ add_to_dex <- function(number, name, type, total, hp,
                                def, spatk, spdef, speed),
                           stringsAsFactors = FALSE
                           )
-  
+
   colnames(dex_entry) <- colnames(df_dex)
   dex_entry
 }
@@ -154,5 +154,8 @@ df_dex <- bind_rows(df_dex,
                     add_to_dex(743, "Ribombee-Totem", "BugFairy", 464, 60, 55, 60, 95, 70, 124),
                     add_to_dex(735, "Gumshoos-Totem", "Normal", 418, 88, 110, 60, 55, 60, 45)
                     )
+
+# Remove Wishiwashi school form
+df_dex <- slice(df_dex, -870)
 
 saveRDS(df_dex, file = "data/dex.RDS")
