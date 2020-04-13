@@ -240,7 +240,7 @@ df_dex <- bind_rows(df_dex,
 
 
 ```{r}
-df_dex <- readRDS(here("data", "dex.RDS"))
+#df_dex <- readRDS(here("data", "dex.RDS"))
 df_usage_type <- left_join(df_usage, df_dex, by = c("Pokemon" = "Name"))
 head(df_usage_type)
 ```
@@ -306,10 +306,6 @@ type_ggplot <- ggplot(df_usage_type_plot, aes(x = .data$`Usage %`, y = .data$Typ
 
 type_ggplot
   
-```
-
-```{r}
-
 ```
 
 

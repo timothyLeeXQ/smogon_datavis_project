@@ -1,0 +1,63 @@
+---
+title: "static_graphs"
+author: "Timothy Lee"
+date: "24/03/2020"
+output: html_document
+---
+
+```{r}
+library(readr)
+library(tidyr)
+library(dplyr)
+library(stringr)
+library(rvest)
+library(purrr)
+library(ggplot2)
+library(highcharter)
+library(here)
+```
+
+```{r}
+gen_8ou_0 <- "https://www.smogon.com/stats/2020-03/gen8ou-0.txt"
+gen_8ou_1500 <- "https://www.smogon.com/stats/2020-03/gen8ou-1500.txt"
+gen_8_ou_0_dec <- "https://www.smogon.com/stats/2019-12/gen8ou-0.txt"
+```
+
+```{r}
+df_gen_8ou_0 <- usage_data_get(readLines(gen_8ou_0))
+df_gen_8ou_1500 <- usage_data_get(readLines(gen_8ou_1500))
+df_gen_8ou_0_dec <- usage_data_get(readLines(gen_8_ou_0_dec))
+```
+
+```{r}
+df_usage_comparison <- full_join(df_gen_8ou_0, df_gen_8ou_0_dec, by = "Pokemon")
+df_usage_comparison[is.na(df_usage_comparison)] <- 0
+max_usage <- max(df_usage_comparison[['Usage %.x']], df_usage_comparison[['Usage %.y']])
+diagonal <- data.frame(x = c(-100, 200), y = c(-100, 200))
+```
+
+```{r}
+highchart() %>%
+  hc_add_series(name = "diag",
+                data = diagonal,
+                hcaes(x = .data$x, y = .data$y),
+                type = "line",
+                color = "black") %>%
+  hc_add_series(name = "Usage Comparison",
+                data = df_usage_comparison,
+                hcaes(x = .data$`Usage %.x`,y = .data$`Usage %.y`, group = .data$Pokemon),
+                type = "scatter") %>% 
+  hc_add_theme(hc_theme_elementary()) %>%
+  hc_xAxis(title = list(text = "Gen 8 OU-0 Usage %"),
+           min = 0,
+           max = max_usage,
+           endOnTick = TRUE) %>%
+  hc_yAxis(title = list(text = "Gen 8 OU-1500 Usage %"),
+           min = 0,
+           max = max_usage,
+           endOnTick = TRUE) %>%
+  hc_size(width = 600, height = 600) %>% 
+  hc_plotOptions(series = list(showInLegend = FALSE))
+```
+
+
