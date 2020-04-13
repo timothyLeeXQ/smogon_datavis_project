@@ -36,32 +36,7 @@ shinyServer(function(input, output, session) {
 
     df_usage <- reactive({
       usage <- usage_input()
-      if (is.null(usage)) {
-        df_usage <- data.frame(integer(), character(), numeric(),
-                               integer(), numeric(), integer(), numeric(),
-                               stringsAsFactors = FALSE)
-        colnames(df_usage) <- c("Rank", "Pokemon", "Usage %",
-                                "Raw", "Raw %", "Real", "Real %")
-      } else {
-        df_usage <- usage[6:(length(usage) - 1)] %>%
-        data.frame(stringsAsFactors = FALSE) %>%
-        separate(., col = ., sep = "\\|+", into = as.character(c(1:9))) %>%
-        select(as.character(c(2:8)))
-
-        #Remove spaces in columns and percent signs
-        df_usage <- apply(df_usage, 2, str_remove_all, pattern = "[[:space:]]|%") %>%
-          data.frame(stringsAsFactors = FALSE)
-
-        colnames(df_usage) <- c("Rank", "Pokemon", "Usage %", "Raw", "Raw %",
-                                "Real", "Real %")
-
-        df_usage$Rank <- as.integer(df_usage$Rank)
-        df_usage$`Usage %` <- as.double(df_usage$`Usage %`)
-        df_usage$Raw <- as.integer(df_usage$Raw)
-        df_usage$`Raw %` <- as.double(df_usage$`Raw %`)
-        df_usage$Real <- as.integer(df_usage$Real)
-        df_usage$`Real %` <- as.double(df_usage$`Real %`)
-      }
+      df_usage <- usage_data_get(usage)
 
       df_usage_type <- left_join(df_usage, df_dex, by = c("Pokemon" = "Name"))
 

@@ -162,6 +162,38 @@ df_dex <- bind_rows(df_dex,
 # Remove Wishiwashi school form
 df_dex <- slice(df_dex, -870)
 
+# Usage get function
+usage_data_get <- function(usage_input){
+  if (is.null(usage_input)) {
+    df_usage <- data.frame(integer(), character(), numeric(),
+                           integer(), numeric(), integer(), numeric(),
+                           stringsAsFactors = FALSE)
+    colnames(df_usage) <- c("Rank", "Pokemon", "Usage %",
+                            "Raw", "Raw %", "Real", "Real %")
+  } else {
+    df_usage <- usage_input[6:(length(usage_input) - 1)] %>%
+    data.frame(stringsAsFactors = FALSE) %>%
+    separate(., col = ., sep = "\\|+", into = as.character(c(1:9))) %>%
+    select(as.character(c(2:8)))
+
+    #Remove spaces in columns and percent signs
+    df_usage <- apply(df_usage, 2, str_remove_all, pattern = "[[:space:]]|%") %>%
+      data.frame(stringsAsFactors = FALSE)
+
+    colnames(df_usage) <- c("Rank", "Pokemon", "Usage %", "Raw", "Raw %",
+                            "Real", "Real %")
+
+    df_usage$Rank <- as.integer(df_usage$Rank)
+    df_usage$`Usage %` <- as.double(df_usage$`Usage %`)
+    df_usage$Raw <- as.integer(df_usage$Raw)
+    df_usage$`Raw %` <- as.double(df_usage$`Raw %`)
+    df_usage$Real <- as.integer(df_usage$Real)
+    df_usage$`Real %` <- as.double(df_usage$`Real %`)
+  }
+
+  df_usage
+}
+
 # Types data for splitting dex types from dex
 types1 <- types1 <- c("Bug", "Dark", "Dragon", "Electric",
                       "Fairy", "Fighting", "Fire", "Flying",
@@ -207,9 +239,9 @@ usage_weighting <- c("Usage", "Raw", "Real")
 # Moveset functions
 moveset_data_get <- function(x, pokemon, attribute) {
   weighted_count <- sum(unlist(x$data[[pokemon]][["Abilities"]]))
-  moveset_data_raw <- unlist(x$data[[pokemon]][[attribute]]) %>% 
+  moveset_data_raw <- unlist(x$data[[pokemon]][[attribute]]) %>%
     sort(decreasing = TRUE)
-  
+
   moveset_data_weighted <- moveset_data_raw/weighted_count
   percent_used <- round(moveset_data_weighted*100, 3)
   attribute_df <- data.frame(names(percent_used), percent_used)
@@ -233,24 +265,24 @@ checks_n_counters_get <- function(chaos, txt, pokemon){
            "KO/Switch Percentage Raw" = V2,
            "KO/Switch StDev (Percentage)" = V3,
            "KO/Switch Percentage Fixed" = V4)
-  
+
   moveset_txt <- txt %>%
     str_remove_all("\t|\n") %>%
     str_split(fixed("+----------------------------------------+")) %>%
     unlist()
-  
+
   pkmn_moveset <- moveset_txt[seq(2, length(moveset_txt), 9)] %>%
     str_remove_all(pattern = "[[:space:]\\|]")
-  
+
   pkmn_moveset <- moveset_txt[seq(2, length(moveset_txt), 9)] %>%
     str_remove_all(pattern = "[[:space:]\\|]")
-  
+
   into_1 <- c("x", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12")
   checks_n_counters_txt <- data.frame(moveset_txt[seq(9, length(moveset_txt), 9)],
                                       stringsAsFactors = FALSE) %>%
     separate(col = 1, into = into_1, sep = "\\|  \\|") %>%
     select(-1)
-  
+
   into_2 <- c("check", NA, "3")
   into_3 <- c("KO", "Switch")
   checks_n_counters_txt <- cbind(pkmn_moveset, checks_n_counters_txt) %>%
@@ -262,15 +294,15 @@ checks_n_counters_get <- function(chaos, txt, pokemon){
     mutate_at(.vars = "check",
               .funs = str_remove_all, pattern = "[^[:alpha:]-:]") %>%
     filter(pkmn_moveset == pokemon)
-  
+
   checks_n_counters <- left_join(checks_n_counters_chaos,
                                  checks_n_counters_txt,
                                  by = c("Pokemon" = "check")) %>%
     rename("KO Percentage" = KO,
            "Switch Percentage" = Switch) %>%
     select(1, 5, 3, 4, 8, 9) %>% arrange(desc(`KO/Switch Percentage Fixed`))
-  
+
   checks_n_counters[is.na(checks_n_counters)] <- " "
-  
+
   checks_n_counters
 }
