@@ -65,15 +65,15 @@ tactics?
     * Graph for Usage by types
     * Table for raw usage % data
 3. Create FAQ
+4. Dashboard to access basic moveset data
 
 **To do for MVP:**
-1. Dashboard to access basic metagame data
-2. Adapt Usage statistics dashboard to provide more specific access to monotype
+1. Adapt Usage statistics dashboard to provide more specific access to monotype
 data
+2. Provide ability to visualise usage trend comparisons over time
 
 **Stretch Goals:**
 1. Provide network visualisation and statistics based on checks/counters data
-2. Provide ability to visualise usage trends over time
 
 ## Links
 * [Smogon Stats](https://www.smogon.com/stats/)
