@@ -7,6 +7,7 @@ library(readr)
 library(highcharter)
 
 shinyServer(function(input, output, session) {
+  # Usage
     usage_input <- reactive({
         month_chosen <- paste(format(input$month_select, "%Y-%m"))
         gen_chosen <- paste(input$gen_select)
@@ -113,7 +114,7 @@ shinyServer(function(input, output, session) {
     })
 
     output$usage_plot_note <- renderText({"Note: Percentages can be above 100%
-      as pokemon with two types are counted once for each type, and Percentages
+      as pokemon with two types are counted once for each type, and percentages
       refers to proportions of teams with using a particuar Pokemon."
     })
 
@@ -169,6 +170,170 @@ shinyServer(function(input, output, session) {
         DT::formatStyle(c("Type 1", "Type 2"),
                         backgroundColor = DT::styleEqual(names(type_colours), type_colours))
       dt_usage_table
+    })
+
+    # Moveset data
+    moveset_chaos_input <- reactive({
+      month_chosen <- paste(format(input$month_moveset, "%Y-%m"))
+      gen_chosen <- paste(input$gen_moveset)
+      format_chosen <- paste(input$format_moveset)
+      weighting_chosen <- paste(input$skill_weighting_moveset) %>%
+        str_replace_all(pattern = fixed("(all formats except current gen OU)"),
+             replacement = "") %>%
+        str_replace_all(pattern = fixed("(for current gen OU)"),
+             replacement = "")
+
+      chaos_endpoint <- paste("https://www.smogon.com/stats/",
+                              month_chosen, "/chaos/",
+                              gen_chosen, format_chosen, "-",
+                              weighting_chosen, ".json") %>%
+        str_replace_all(pattern = "[[:space:]]", replacement = "") %>%
+        str_to_lower()
+
+      chaos <- tryCatch({
+        fromJSON(chaos_endpoint)
+        }, error = function(error) {
+        return(NULL)
+        })
+
+      chaos
+    })
+
+    moveset_txt_input <- reactive({
+      month_chosen <- paste(format(input$month_moveset, "%Y-%m"))
+      gen_chosen <- paste(input$gen_moveset)
+      format_chosen <- paste(input$format_moveset)
+      weighting_chosen <- paste(input$skill_weighting_moveset) %>%
+        str_replace_all(pattern = fixed("(all formats except current gen OU)"),
+             replacement = "") %>%
+        str_replace_all(pattern = fixed("(for current gen OU)"),
+             replacement = "")
+
+      moveset_txt_endpoint <- paste("https://www.smogon.com/stats/",
+                              month_chosen, "/moveset/",
+                              gen_chosen, format_chosen, "-",
+                              weighting_chosen, ".txt") %>%
+        str_replace_all(pattern = "[[:space:]]", replacement = "") %>%
+        str_to_lower()
+
+      moveset_txt <- tryCatch({
+        read_file(moveset_txt_endpoint)
+        }, error = function(error) {
+        return(NULL)
+        })
+    })
+
+    observeEvent(
+      moveset_chaos_input(), {
+        chaos <- moveset_chaos_input()
+        choices <- sort(names(chaos$data))
+        updateSelectInput(session, "pokemon_moveset", choices = choices)
+
+    })
+
+    output$abil_table <- DT::renderDataTable({
+      chaos <- moveset_chaos_input()
+      pokemon_chosen <- paste(input$pokemon_moveset)
+
+      dt_abil_table <- tryCatch({
+        abil_table <- moveset_data_get(chaos, pokemon_chosen, "Abilities")
+
+        DT::datatable(abil_table,
+                      options = list(pageLength = nrow(abil_table),
+                                     scrollX = TRUE,
+                                     scrollY = 300,
+                                     fixedHeader=TRUE)
+                      )
+        }, error = function(error) {
+          message("An error occurred. Did you pick a game format that exists?")
+        })
+
+      dt_abil_table
+    })
+
+    output$item_table <- DT::renderDataTable({
+      chaos <- moveset_chaos_input()
+      pokemon_chosen <- paste(input$pokemon_moveset)
+
+      dt_item_table <- tryCatch({
+        item_table <- moveset_data_get(chaos, pokemon_chosen, "Items")
+
+        DT::datatable(item_table,
+                      options = list(pageLength = nrow(item_table),
+                                     scrollX = TRUE,
+                                     scrollY = 300,
+                                     fixedHeader=TRUE)
+                      )
+        }, error = function(error) {
+          message("An error occurred. Did you pick a game format that exists?")
+        })
+
+      dt_item_table
+    })
+
+    output$move_table <- DT::renderDataTable({
+      chaos <- moveset_chaos_input()
+      pokemon_chosen <- paste(input$pokemon_moveset)
+
+      dt_move_table <- tryCatch({
+        move_table <- moveset_data_get(chaos, pokemon_chosen, "Moves")
+
+        DT::datatable(move_table,
+                      options = list(pageLength = nrow(move_table),
+                                     scrollX = TRUE,
+                                     scrollY = 300,
+                                     fixedHeader=TRUE)
+                      )
+        }, error = function(error) {
+          message("An error occurred. Did you pick a game format that exists?")
+        })
+
+      dt_move_table
+    })
+
+    output$spread_table <- DT::renderDataTable({
+      chaos <- moveset_chaos_input()
+      pokemon_chosen <- paste(input$pokemon_moveset)
+
+      dt_spread_table <- tryCatch({
+        spread_table <- moveset_data_get(chaos, pokemon_chosen, "Spreads") %>%
+          separate(col = "Spreads", into = c("Nature", "HP", "Attack",
+                                             "Defense", "SpAtk", "SpDef",
+                                             "Speed"),
+           sep = "[:/]")
+
+        DT::datatable(spread_table,
+                      options = list(pageLength = nrow(spread_table),
+                                     scrollX = TRUE,
+                                     scrollY = 300,
+                                     fixedHeader=TRUE)
+                      )
+        }, error = function(error) {
+          message("An error occurred. Did you pick a game format that exists?")
+        })
+
+      dt_spread_table
+    })
+
+    output$checks_n_counters <- DT::renderDataTable({
+      chaos <- moveset_chaos_input()
+      txt <- moveset_txt_input()
+      pokemon_chosen <- paste(input$pokemon_moveset)
+
+      dt_check_n_counter <- tryCatch({
+        check_n_counters <- checks_n_counters_get(chaos, txt, pokemon_chosen)
+
+        DT::datatable(check_n_counters,
+                      options = list(pageLength = nrow(check_n_counters),
+                                     scrollX = TRUE,
+                                     scrollY = 300,
+                                     fixedHeader=TRUE)
+                      )
+        }, error = function(error) {
+          message("An error occurred. Did you pick a game format that exists?")
+        })
+
+      dt_check_n_counter
     })
 
 })

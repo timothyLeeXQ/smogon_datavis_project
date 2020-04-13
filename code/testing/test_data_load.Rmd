@@ -7,18 +7,28 @@ output: html_notebook
 ```{r}
 library(jsonlite)
 library(tidyr)
+library(dplyr)
 library(readr)
 library(stringr)
 ```
 
 ```{r}
-gen_8ou_0 <- fromJSON("https://www.smogon.com/stats/2020-01/chaos/gen8ou-0.json", simplifyDataFrame = TRUE)
-gen_8ou_1500 <- fromJSON("https://www.smogon.com/stats/2020-01/chaos/gen8ou-1500.json", simplifyDataFrame = TRUE)
+gen_8ou_0 <- fromJSON("https://www.smogon.com/stats/2020-01/chaos/gen8ou-0.json")
+gen_8ou_1500 <- fromJSON("https://www.smogon.com/stats/2020-01/chaos/gen8ou-1500.json")
+gen_8ou_0_txt <- read_file("https://www.smogon.com/stats/2020-01/moveset/gen8ou-0.txt")
+gen_8ou_1500_txt <- read_file("https://www.smogon.com/stats/2020-01/moveset/gen8ou-1500.txt")
 ```
 
 ```{r}
 gen_8ou_0$info
 ```
+
+#Pokemon names
+
+```{r}
+sort(names(gen_8ou_0$data))[1:5]
+```
+
 
 ```{r}
 moveset_data_get <- function(x, pokemon, attribute) {
@@ -27,72 +37,187 @@ moveset_data_get <- function(x, pokemon, attribute) {
     sort(decreasing = TRUE)
   
   moveset_data_weighted <- moveset_data_raw/weighted_count
-  moveset_data_weighted*100
+  percent_used <- round(moveset_data_weighted*100, 3)
+  attribute_df <- data.frame(names(percent_used), percent_used)
+  names(attribute_df) <- c(attribute, "Percent Used")
+  row.names(attribute_df) <- NULL
+  attribute_df
 }
 ```
 
 ## Abilities
 ```{r}
-abilities <- moveset_data_get(gen_8ou_1500, "Dragapult", "Abilities")
+abilities <- moveset_data_get(gen_8ou_0, "Dragapult", "Abilities")
 
-format(abilities, scientific = FALSE)
+head(abilities)
 ```
 
 ## Items
 ```{r}
-items <- moveset_data_get(gen_8ou_1500, "Dragapult", "Items")
+items <- moveset_data_get(gen_8ou_0, "Dragapult", "Items")
 
-format(items, scientific = FALSE)[1:5]
+head(items)
 ```
 
 ## Spreads
 ```{r}
-spreads <- moveset_data_get(gen_8ou_1500, "Dragapult", "Spreads")
+spreads <- moveset_data_get(gen_8ou_0, "Dragapult", "Spreads") %>%
+  separate(col = "Spreads", into = c("Nature", "HP", "Attack",
+                                     "Defense", "SpAtk", "SpDef", "Speed"),
+           sep = "[:/]")
 
-format(spreads, scientific = FALSE)[1:5]
+head(spreads)
 ```
 
 ## Moves
 ```{r}
-moves <- moveset_data_get(gen_8ou_1500, "Dragapult", "Moves")
+moves <- moveset_data_get(gen_8ou_0, "Dragapult", "Moves")
 
-format(moves, scientific = FALSE)[1:5]
+head(moves)
 ```
 
 ## Teammates
 ```{r}
-teammates <- moveset_data_get(gen_8ou_1500, "Dragapult", "Teammates")
-format(teammates, scientific = FALSE)[1:5]
+teammates <- moveset_data_get(gen_8ou_0, "Dragapult", "Teammates")
+head(teammates)
 ```
 
-https://www.smogon.com/forums/threads/official-smogon-university-usage-statistics-discussion-thread-mk-2.3508502/
-
+## Checks and Counters
 Checks & counters - array of 3 numbers for each pokemon. What do they represent?
 
 Number n of times the matchup occurred (don't count U-Turn KOs or force-outs)
 The fraction p of times the counter got the KO or caused a switch
 Standard deviation for the previous value: sqrt(p*(1.0-p)/n)
 
+https://www.smogon.com/forums/threads/official-smogon-university-usage-statistics-discussion-thread-mk-2.3508502/
 
 ```{r}
-format(gen_8ou_0$data$Dragapult$`Checks and Counters`$Grimmsnarl, scientific = FALSE)
+checks_n_counters_get <- function(chaos, txt, pokemon){
+  checks_n_counters_chaos <- data.frame(chaos$data[[pokemon]]$`Checks and Counters`) %>%
+  t() %>%
+  as.data.frame()
+  checks_n_counters_chaos <- cbind(names(chaos$data[[pokemon]]$`Checks and Counters`),
+                                   checks_n_counters_chaos)
+  checks_n_counters_chaos <- checks_n_counters_chaos %>%
+    mutate(V4 = V2 - 4*V3,
+           V2 = round(V2*100, 3),
+           V3 = round(V3*100, 3),
+           V4 = round(V4*100, 3)) %>%
+    rename(Pokemon = 1,
+           "KO/Switch Percentage Raw" = V2,
+           "KO/Switch StDev (Percentage)" = V3,
+           "KO/Switch Percentage Fixed" = V4)
+  
+  moveset_txt <- txt %>%
+    str_remove_all("\t|\n") %>%
+    str_split(fixed("+----------------------------------------+")) %>%
+    unlist()
+  
+  pkmn_moveset <- moveset_txt[seq(2, length(moveset_txt), 9)] %>%
+    str_remove_all(pattern = "[[:space:]\\|]")
+  
+  pkmn_moveset <- moveset_txt[seq(2, length(moveset_txt), 9)] %>%
+    str_remove_all(pattern = "[[:space:]\\|]")
+  
+  into_1 <- c("x", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12")
+  checks_n_counters_txt <- data.frame(moveset_txt[seq(9, length(moveset_txt), 9)],
+                                      stringsAsFactors = FALSE) %>%
+    separate(col = 1, into = into_1, sep = "\\|  \\|") %>%
+    select(-1)
+  
+  into_2 <- c("check", NA, "3")
+  into_3 <- c("KO", "Switch")
+  checks_n_counters_txt <- cbind(pkmn_moveset, checks_n_counters_txt) %>%
+    pivot_longer(-1, names_to = "number", values_to = "check") %>%
+    separate(col = "check", into = into_2, sep = "\\(") %>%
+    separate(col = "3", into = into_3, sep = "\\/") %>%
+    mutate_at(.vars = c("KO", "Switch"),
+              .funs = str_remove_all, pattern = "[^0-9.]") %>%
+    mutate_at(.vars = "check",
+              .funs = str_remove_all, pattern = "[^[:alpha:]-:]") %>%
+    filter(pkmn_moveset == pokemon)
+  
+  checks_n_counters <- left_join(checks_n_counters_chaos,
+                                 checks_n_counters_txt,
+                                 by = c("Pokemon" = "check")) %>%
+    rename("KO Percentage" = KO,
+           "Switch Percentage" = Switch) %>%
+    select(1, 5, 3, 4, 8, 9) %>% arrange(desc(`KO/Switch Percentage Fixed`))
+  
+  checks_n_counters[is.na(checks_n_counters)] <- " "
+  
+  checks_n_counters
+}
 ```
 
 
 ```{r}
-usage <- read_file("https://www.smogon.com/stats/2020-01/moveset/gen8ou-0.txt") %>%
+w <- checks_n_counters_get(gen_8ou_0, gen_8ou_0_txt, "Dragapult")
+x <- checks_n_counters_get(gen_8ou_1500, gen_8ou_1500_txt, "Dragapult")
+y <- checks_n_counters_get(gen_8ou_0, gen_8ou_0_txt, "Corviknight")
+z <- checks_n_counters_get(gen_8ou_1500, gen_8ou_1500_txt, "Corviknight")
+```
+
+
+```{r}
+checks_n_counters_chaos <- data.frame(gen_8ou_1500$data$Dragapult$`Checks and Counters`) %>%
+  t() %>%
+  as.data.frame()
+checks_n_counters_chaos <- cbind(names(gen_8ou_1500$data[["Dragapult"]]$`Checks and Counters`),
+                                 checks_n_counters_chaos)
+checks_n_counters_chaos <- checks_n_counters_chaos %>%
+  mutate(V4 = V2 - 4*V3,
+         V2 = round(V2*100, 3),
+         V3 = round(V3*100, 3),
+         V4 = round(V4*100, 3)) %>%
+  rename(Pokemon = 1,
+         "KO/Switch Percentage Raw" = V2,
+         "KO/Switch StDev (Percentage)" = V3,
+         "KO/Switch Percentage Fixed" = V4)
+```
+
+
+```{r}
+moveset_txt <- gen_8ou_1500_txt %>%
   str_remove_all("\t|\n") %>%
   str_split(fixed("+----------------------------------------+")) %>%
   unlist()
-
-usage[1:20]
-
-#x <- read_tsv(usage, col_names = FALSE)
-
 ```
 
 
+```{r}
+pkmn_moveset <- moveset_txt[seq(2, length(moveset_txt), 9)] %>%
+  str_remove_all(pattern = "[[:space:]\\|]")
+```
 
+```{r}
+into_1 <- c("x", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12")
+checks_n_counters_txt <- data.frame(moveset_txt[seq(9, length(moveset_txt), 9)], stringsAsFactors = FALSE) %>%
+  separate(col = 1, into = into_1, sep = "\\|  \\|") %>%
+  select(-1)
+
+into_2 <- c("check", NA, "3")
+into_3 <- c("KO", "Switch")
+checks_n_counters_txt <- cbind(pkmn_moveset, checks_n_counters_txt) %>%
+  pivot_longer(-1, names_to = "number", values_to = "check") %>%
+  separate(col = "check", into = into_2, sep = "\\(") %>%
+  separate(col = "3", into = into_3, sep = "\\/") %>%
+  mutate_at(.vars = c("KO", "Switch"),
+            .funs = str_remove_all, pattern = "[^0-9.]") %>%
+  mutate_at(.vars = "check",
+            .funs = str_remove_all, pattern = "[^[:alpha:]-:]") %>%
+  filter(pkmn_moveset == "Abomasnow")
+
+```
+
+```{r}
+checks_n_counters <- left_join(checks_n_counters_chaos,
+                               checks_n_counters_txt,
+                               by = c("Pokemon" = "check")) %>%
+  rename("KO Percentage" = KO,
+         "Switch Percentage" = Switch) %>%
+  select(1, 5, 3, 4, 8, 9) %>% arrange(desc(`KO/Switch Percentage Fixed`))
+```
 
 
 ```{r}

@@ -4,6 +4,7 @@ library(tidyr)
 library(stringr)
 library(xml2)
 library(rvest)
+library(jsonlite)
 
 # Dex
 df_dex <- read_html("https://pokemondb.net/pokedex/all") %>%
@@ -198,3 +199,74 @@ skill_ranking <- c("0", "1500",
 
 # Usage weightings
 usage_weighting <- c("Usage", "Raw", "Real")
+
+# Moveset functions
+moveset_data_get <- function(x, pokemon, attribute) {
+  weighted_count <- sum(unlist(x$data[[pokemon]][["Abilities"]]))
+  moveset_data_raw <- unlist(x$data[[pokemon]][[attribute]]) %>% 
+    sort(decreasing = TRUE)
+  
+  moveset_data_weighted <- moveset_data_raw/weighted_count
+  percent_used <- round(moveset_data_weighted*100, 3)
+  attribute_df <- data.frame(names(percent_used), percent_used)
+  names(attribute_df) <- c(attribute, "Percent Used")
+  row.names(attribute_df) <- NULL
+  attribute_df
+}
+
+checks_n_counters_get <- function(chaos, txt, pokemon){
+  checks_n_counters_chaos <- data.frame(chaos$data[[pokemon]]$`Checks and Counters`) %>%
+    t() %>%
+    as.data.frame()
+  checks_n_counters_chaos <- cbind(names(chaos$data[[pokemon]]$`Checks and Counters`),
+                                   checks_n_counters_chaos)
+  checks_n_counters_chaos <- checks_n_counters_chaos %>%
+    mutate(V4 = V2 - 4*V3,
+           V2 = round(V2*100, 3),
+           V3 = round(V3*100, 3),
+           V4 = round(V4*100, 3)) %>%
+    rename(Pokemon = 1,
+           "KO/Switch Percentage Raw" = V2,
+           "KO/Switch StDev (Percentage)" = V3,
+           "KO/Switch Percentage Fixed" = V4)
+  
+  moveset_txt <- txt %>%
+    str_remove_all("\t|\n") %>%
+    str_split(fixed("+----------------------------------------+")) %>%
+    unlist()
+  
+  pkmn_moveset <- moveset_txt[seq(2, length(moveset_txt), 9)] %>%
+    str_remove_all(pattern = "[[:space:]\\|]")
+  
+  pkmn_moveset <- moveset_txt[seq(2, length(moveset_txt), 9)] %>%
+    str_remove_all(pattern = "[[:space:]\\|]")
+  
+  into_1 <- c("x", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12")
+  checks_n_counters_txt <- data.frame(moveset_txt[seq(9, length(moveset_txt), 9)],
+                                      stringsAsFactors = FALSE) %>%
+    separate(col = 1, into = into_1, sep = "\\|  \\|") %>%
+    select(-1)
+  
+  into_2 <- c("check", NA, "3")
+  into_3 <- c("KO", "Switch")
+  checks_n_counters_txt <- cbind(pkmn_moveset, checks_n_counters_txt) %>%
+    pivot_longer(-1, names_to = "number", values_to = "check") %>%
+    separate(col = "check", into = into_2, sep = "\\(") %>%
+    separate(col = "3", into = into_3, sep = "\\/") %>%
+    mutate_at(.vars = c("KO", "Switch"),
+              .funs = str_remove_all, pattern = "[^0-9.]") %>%
+    mutate_at(.vars = "check",
+              .funs = str_remove_all, pattern = "[^[:alpha:]-:]") %>%
+    filter(pkmn_moveset == pokemon)
+  
+  checks_n_counters <- left_join(checks_n_counters_chaos,
+                                 checks_n_counters_txt,
+                                 by = c("Pokemon" = "check")) %>%
+    rename("KO Percentage" = KO,
+           "Switch Percentage" = Switch) %>%
+    select(1, 5, 3, 4, 8, 9) %>% arrange(desc(`KO/Switch Percentage Fixed`))
+  
+  checks_n_counters[is.na(checks_n_counters)] <- " "
+  
+  checks_n_counters
+}

@@ -11,7 +11,7 @@ header <- dashboardHeader(title = "Smogon Stats Viz")
 sidebar <- dashboardSidebar(
     sidebarMenu(
         menuItem("Usage Stats", tabName = "usage", icon = icon("chess")),
-        menuItem("Item use", tabName = "item", icon = icon("shopping-bag")),
+        menuItem("Moveset", tabName = "moveset", icon = icon("shopping-bag")),
         menuItem("FAQ", tabName = "FAQ", icon = icon("question"))
     )
 )
@@ -29,6 +29,7 @@ body <- dashboardBody(
                         value = format(Sys.Date()-31, "%Y-%m-%d"),
                         label = " ",
                         minDate = "2014-11-01",
+                        maxDate = format(Sys.Date()-31, "%Y-%m-%d"),
                         minView = "months"
                         )
                     ),
@@ -77,23 +78,85 @@ body <- dashboardBody(
                 )
           ),
         tabItem(
-            tabName = "item",
+            tabName = "moveset",
             fluidRow(
-                valueBox("xxxxx", icon("question"), value = "placeholder"),
-                valueBox("yyyyy", icon("laptop-code"), value = "placeholder")
-                ),
+                box(width = 2,
+                    title = "Select Month:",
+                    airMonthpickerInput(
+                        inputId = "month_moveset",
+                        value = format(Sys.Date()-31, "%Y-%m-%d"),
+                        label = " ",
+                        minDate = "2014-11-01",
+                        maxDate = format(Sys.Date()-31, "%Y-%m-%d"),
+                        minView = "months"
+                        )
+                    ),
+                box(width = 2,
+                    title = "Select Gen:",
+                    selectInput("gen_moveset", label = " ", choices = gen_vec),
+                    ),
+                box(width = 2,
+                    title = "Select Tier/Format:",
+                    selectInput("format_moveset", label = " ", choices = formats),
+                    ),
+                box(width = 3,
+                    title = "Select Skill Weighting:",
+                    selectInput("skill_weighting_moveset",
+                                label = "See the FAQ if you don't know what this is",
+                                choices = skill_ranking)
+                    ),
+                box(width = 3,
+                    title = "Select A Pokemon:",
+                    selectInput("pokemon_moveset",
+                                label = " ",
+                                choices = NULL)
+                    )
+                  ),
             fluidRow(
-                box(
-                      width = 12,
-                      title = "zzzzz",
-                      textOutput("")
+                box(width = 4,
+                    title = "Abilities",
+                    DT::dataTableOutput("abil_table"),
+                    style = "height:auto;
+                             width:auto;
+                             overflow-y:scroll;
+                             overflow-x:scroll;"
+                    ),
+                box(width = 4,
+                    title = "Items",
+                    DT::dataTableOutput("item_table"),
+                    style = "height:auto;
+                             width:auto;
+                             overflow-y:scroll;
+                             overflow-x:scroll;"
+                    ),
+                box(width = 4,
+                    title = "Moves",
+                    DT::dataTableOutput("move_table"),
+                    style = "height:auto;
+                             width:auto;
+                             overflow-y:scroll;
+                             overflow-x:scroll;"
+                    )
+                  ),
+            fluidRow(
+                box(width = 6,
+                    title = "Spreads",
+                    DT::dataTableOutput("spread_table"),
+                    style = "height:auto;
+                             width:auto;
+                             overflow-y:scroll;
+                             overflow-x:scroll;"
+                    ),
+                box(width = 6,
+                    title = "Checks and Counters",
+                    DT::dataTableOutput("checks_n_counters"),
+                    style = "height:auto;
+                             width:auto;
+                             overflow-y:scroll;
+                             overflow-x:scroll;"
+                    )
                   )
-                ),
-            fluidRow(
-                box(width = 12,
-                    title = "qqqqq")
-                )
-        ),
+            ),
         tabItem(
             tabName = "FAQ",
             fluidRow(
