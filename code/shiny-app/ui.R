@@ -423,6 +423,64 @@ body <- dashboardBody(
                 ),
             fluidRow(
                 box(width = 12,
+                    title = "Why do the top 10 teammates seem to be used so
+                    much less frequently than what seems to make sense?",
+                    HTML("<p>\"Percent Used\" for teammates is more precisely
+                    referred to as \"Percent Used over Baseline\". Antar notes
+                    that teammate stats are calculated as the <q>fraction of
+                    teams with X that also have Y minus fraction of teams with
+                    Y</q>. Hence, if you selected Pikachu and 50% of teams with
+                    Pikachu also have Charizard, while Charizard is only on 40%
+                    of all teams, the \"Percent Used over Baseline\" is
+                    50% - 40% = 10%</p>")
+                  )
+                ),
+            fluidRow(
+                box(width = 12,
+                    title = "Why is the usage percentage of the bottom 5
+                    teammates sometimes negative? Why are some clear bad
+                    options excluded?",
+                    HTML("<p>Because of how \"Percent Used\" for teammates is
+                    computed (see the question just above), clear bad options
+                    that are rarely used don't have a very low \"Percent Used
+                    over Baseline\". Instead, the bottom 5 should be populated
+                    by Pokemon that are used less than usual when the team contains
+                    the Pokemon you selected. The \"Percent Used
+                    over Baseline\" will be negative when this is the case.</p>")
+                  )
+                ),
+            fluidRow(
+                box(width = 12,
+                    title = "How about Checks and Counters? What does
+                    \"KO/Switch Percentage mean?\"",
+                    HTML("<p>The KO/Switch Percentage is the percentage of times
+                    the counter KO'd or forced a switch out of the Pokemon you
+                    selected. This is the raw number. This excludes U-turn KOs
+                    and force-outs from moves like Dragon Tail.</p>
+                    <br>
+                    <p>The fixed number is the raw number, minus 4 times the
+                    standard deviation of this raw number. Why 4 times the
+                    standard deviation? I can't say for sure, but the moveset
+                    stats appears to use this to provide players with the top
+                    checks/counters. I think its a good metric as it penalises
+                    the uncertainty in knowing whether a KO/switch will occur
+                    because the given matchup occurred less often that month.
+                    </p>")
+                  )
+                ),
+            fluidRow(
+                box(width = 12,
+                    title = "Why is the KO percentage and Switch Percentage
+                    missing? for most Pokemon in the Checks and Counters Table?",
+                    HTML("<p>Unfortunately Smogon does not publish the raw KO
+                    and Switch numbers, so it is impossible to compute this
+                    ourselves. However, Smogon provides the percentages for the
+                    first 12 Pokemon on the list. Where available, these figures
+                    are provided.</p>")
+                  )
+                ),
+            fluidRow(
+                box(width = 12,
                     title = "Where can I complain that if something went wrong?",
                     HTML("<p>Let me know about my incompetence by posting an
                     issue on the <a href = 'https://bit.ly/3bRvaTy'>project repo

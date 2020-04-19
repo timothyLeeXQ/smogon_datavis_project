@@ -454,7 +454,7 @@ shinyServer(function(input, output, session) {
                      y = .data[["Percent Used"]])) %>%
         hc_add_theme(hc_theme_elementary()) %>%
         hc_xAxis(title = list(text = "Pokemon")) %>%
-        hc_yAxis(title = list(text = "Percent Used Over Baseline"),
+        hc_yAxis(title = list(text = "KO/Switch Percentage (Fixed)"),
                  max = 100,
                  tickInterval = 10)
         }, error = function(error) {
