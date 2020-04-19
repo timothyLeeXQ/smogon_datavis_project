@@ -244,7 +244,9 @@ moveset_data_get <- function(x, pokemon, attribute) {
 
   moveset_data_weighted <- moveset_data_raw/weighted_count
   percent_used <- round(moveset_data_weighted*100, 3)
-  attribute_df <- data.frame(names(percent_used), percent_used)
+  attribute_df <- data.frame(names(percent_used),
+                             percent_used,
+                             stringsAsFactors = FALSE)
   names(attribute_df) <- c(attribute, "Percent Used")
   row.names(attribute_df) <- NULL
   attribute_df

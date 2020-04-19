@@ -38,7 +38,9 @@ moveset_data_get <- function(x, pokemon, attribute) {
   
   moveset_data_weighted <- moveset_data_raw/weighted_count
   percent_used <- round(moveset_data_weighted*100, 3)
-  attribute_df <- data.frame(names(percent_used), percent_used)
+  attribute_df <- data.frame(names(percent_used),
+                             percent_used,
+                             stringsAsFactors = FALSE)
   names(attribute_df) <- c(attribute, "Percent Used")
   row.names(attribute_df) <- NULL
   attribute_df
@@ -56,7 +58,7 @@ head(abilities)
 ```{r}
 items <- moveset_data_get(gen_8ou_0, "Dragapult", "Items")
 
-head(items)
+items[1:10,]
 ```
 
 ## Spreads
@@ -77,6 +79,10 @@ head(moves)
 ```
 
 ## Teammates
+
+From:
+https://www.smogon.com/forums/threads/official-smogon-university-usage-statistics-discussion-thread-mk-3.3591776/post-7192755
+"Teammate stats, IIRC, are P(X|Y) - P(Y). That is, fraction of teams with X that also have Y minus fraction of teams with Y."
 ```{r}
 teammates <- moveset_data_get(gen_8ou_0, "Dragapult", "Teammates")
 head(teammates)

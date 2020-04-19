@@ -5,8 +5,8 @@ account: timlxq
 server: shinyapps.io
 hostUrl: https://api.shinyapps.io/v1
 appId: 2049726
-bundleId: 3005386
+bundleId: 3033717
 url: https://timlxq.shinyapps.io/smogon_viz_project/
-when: 1586753751.3849
+when: 1587284058.35173
 asMultiple: FALSE
 asStatic: FALSE

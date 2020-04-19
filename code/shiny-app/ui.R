@@ -180,27 +180,44 @@ body <- dashboardBody(
                                 choices = NULL)
                     )
                   ),
+          fluidRow(
+              box(width = 6,
+                  title = "Abilities",
+                  highchartOutput("hc_abil_plot"),
+                  style = "height:450px;"
+                  ),
+              box(width = 6,
+                  title = "Ability Table",
+                  DT::dataTableOutput("dt_abil_table"),
+                  style = "height:450px;
+                           width:auto;"
+                  )
+                ),
+          fluidRow(
+              box(width = 6,
+                  title = "Top 10 Items Used",
+                  highchartOutput("hc_item_plot"),
+                  style = "height:450px;"
+                  ),
+              box(width = 6,
+                  title = "Item Table",
+                  DT::dataTableOutput("dt_item_table"),
+                  style = "height:450px;
+                           width:auto;
+                           overflow-y:scroll;
+                           overflow-x:scroll;"
+                  )
+                ),
             fluidRow(
-                box(width = 4,
-                    title = "Abilities",
-                    DT::dataTableOutput("abil_table"),
-                    style = "height:auto;
-                             width:auto;
-                             overflow-y:scroll;
-                             overflow-x:scroll;"
+                box(width = 6,
+                    title = "Top 10 Moves Used",
+                    highchartOutput("hc_move_plot"),
+                    style = "height:450px;"
                     ),
-                box(width = 4,
-                    title = "Items",
-                    DT::dataTableOutput("item_table"),
-                    style = "height:auto;
-                             width:auto;
-                             overflow-y:scroll;
-                             overflow-x:scroll;"
-                    ),
-                box(width = 4,
-                    title = "Moves",
-                    DT::dataTableOutput("move_table"),
-                    style = "height:auto;
+                box(width = 6,
+                    title = "Move Table",
+                    DT::dataTableOutput("dt_move_table"),
+                    style = "height:450px;
                              width:auto;
                              overflow-y:scroll;
                              overflow-x:scroll;"
@@ -208,17 +225,45 @@ body <- dashboardBody(
                   ),
             fluidRow(
                 box(width = 6,
+                    title = "Top 10 Natures, IV/EV Spreads Used",
+                    highchartOutput("hc_spreads_plot"),
+                    textOutput("spreads_plot_note"),
+                    style = "height:450px;"
+                    ),
+                box(width = 6,
                     title = "Spreads",
-                    DT::dataTableOutput("spread_table"),
-                    style = "height:auto;
+                    DT::dataTableOutput("dt_spread_table"),
+                    style = "height:450px;
                              width:auto;
                              overflow-y:scroll;
                              overflow-x:scroll;"
+                    )
+                  ),
+            fluidRow(
+                box(width = 6,
+                    title = "Top 10 and Bottom 5 Teammates",
+                    highchartOutput("hc_teammate_plot"),
+                    style = "height:450px;"
+                    ),
+                box(width = 6,
+                    title = "Teammate Table",
+                    DT::dataTableOutput("dt_teammate_table"),
+                    style = "height:450px;
+                             width:auto;
+                             overflow-y:scroll;
+                             overflow-x:scroll;"
+                    )
+                  ),
+            fluidRow(
+                box(width = 6,
+                    title = "Top 10 and Bottom 5 Checks/Counters",
+                    highchartOutput("hc_checks_plot"),
+                    style = "height:450px;"
                     ),
                 box(width = 6,
                     title = "Checks and Counters",
-                    DT::dataTableOutput("checks_n_counters"),
-                    style = "height:auto;
+                    DT::dataTableOutput("dt_checks_n_counters"),
+                    style = "height:450px;
                              width:auto;
                              overflow-y:scroll;
                              overflow-x:scroll;"
@@ -228,23 +273,22 @@ body <- dashboardBody(
         tabItem(
             tabName = "FAQ",
             fluidRow(
-                box(
-                      width = 12,
-                      title = "Why is the data not showing?",
-                      HTML("If the data is not showing, that may be because:
-                            <br>
-                            <ul>
-                              <li>You picked a date in the future</li>
-                              <li>If you picked last month’s date, the stats
-                              have not been released yet (they’re usually
-                              released a few days after the end of the month)
-                              </li>
-                              <li>You selected a format or Gen that did not
-                              exist for that particular month (e.g. Gen 1 PU,
-                              or Gen 8 OU in Oct 2017)</li>
-                              <li>I screwed up – See below on letting me know
-                              </li>
-                            </ul>")
+                box(width = 12,
+                    title = "Why is the data not showing?",
+                    HTML("If the data is not showing, that may be because:
+                          <br>
+                          <ul>
+                            <li>You picked a date in the future</li>
+                            <li>If you picked last month’s date, the stats
+                            have not been released yet (they’re usually
+                            released a few days after the end of the month)
+                            </li>
+                            <li>You selected a format or Gen that did not
+                            exist for that particular month (e.g. Gen 1 PU,
+                            or Gen 8 OU in Oct 2017)</li>
+                            <li>I screwed up – See below on letting me know
+                            </li>
+                          </ul>")
                   )
                 ),
             fluidRow(

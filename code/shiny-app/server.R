@@ -198,6 +198,8 @@ shinyServer(function(input, output, session) {
         })
     })
 
+
+    # Dynamic selector for which pokemon's stats to show
     observeEvent(
       moveset_chaos_input(), {
         chaos <- moveset_chaos_input()
@@ -206,33 +208,97 @@ shinyServer(function(input, output, session) {
 
     })
 
-    output$abil_table <- DT::renderDataTable({
+    # Abilities
+    abil_table <- reactive({
       chaos <- moveset_chaos_input()
       pokemon_chosen <- paste(input$pokemon_moveset)
 
-      dt_abil_table <- tryCatch({
-        abil_table <- moveset_data_get(chaos, pokemon_chosen, "Abilities")
+      abil_table <- tryCatch({
+        moveset_data_get(chaos, pokemon_chosen, "Abilities")
+      }, error = function(error) {
+        message("An error occurred. Did you pick a game format that exists?")
+      })
 
+      abil_table
+    })
+
+    output$hc_abil_plot <- renderHighchart({
+      abil_table <- abil_table()
+
+      hc_abil_plot <- tryCatch({
+        hchart(abil_table,
+               type = "bar",
+               name = "Percent Used",
+               hcaes(x = .data[["Abilities"]],
+                     y = .data[["Percent Used"]])) %>%
+        hc_add_theme(hc_theme_elementary()) %>%
+        hc_xAxis(title = list(text = "Ability")) %>%
+        hc_yAxis(title = list(text = "Percent Used"),
+                 min = 0,
+                 max = 100,
+                 tickInterval = 10)
+        }, error = function(error) {
+          message("An error occurred. Did you pick a game format that exists?")
+        })
+
+      hc_abil_plot
+    })
+
+    output$dt_abil_table <- DT::renderDataTable({
+      abil_table <- abil_table()
+      dt_abil_table <- tryCatch({
         DT::datatable(abil_table,
                       options = list(pageLength = nrow(abil_table),
                                      scrollX = TRUE,
                                      scrollY = 300,
                                      fixedHeader=TRUE)
-                      )
+                       )
+        }, error = function(error) {
+          message("An error occurred. Did you pick a game format that exists?")
+      })
+      dt_abil_table
+    })
+
+    # Items
+    item_table <- reactive({
+      chaos <- moveset_chaos_input()
+      pokemon_chosen <- paste(input$pokemon_moveset)
+
+      item_table <- tryCatch({
+        moveset_data_get(chaos, pokemon_chosen, "Items")
+      }, error = function(error) {
+        message("An error occurred. Did you pick a game format that exists?")
+      })
+
+      item_table
+    })
+
+    output$hc_item_plot <- renderHighchart({
+      item_table <- item_table()
+      item_table <- item_table[1:10,]
+
+      hc_item_plot <- tryCatch({
+        hchart(item_table,
+               type = "bar",
+               name = "Percent Used",
+               hcaes(x = .data[["Items"]],
+                     y = .data[["Percent Used"]])) %>%
+        hc_add_theme(hc_theme_elementary()) %>%
+        hc_xAxis(title = list(text = "Item")) %>%
+        hc_yAxis(title = list(text = "Percent Used"),
+                 min = 0,
+                 max = 100,
+                 tickInterval = 10)
         }, error = function(error) {
           message("An error occurred. Did you pick a game format that exists?")
         })
 
-      dt_abil_table
+      hc_item_plot
     })
 
-    output$item_table <- DT::renderDataTable({
-      chaos <- moveset_chaos_input()
-      pokemon_chosen <- paste(input$pokemon_moveset)
-
+    output$dt_item_table <- DT::renderDataTable({
+      item_table <- item_table()
       dt_item_table <- tryCatch({
-        item_table <- moveset_data_get(chaos, pokemon_chosen, "Items")
-
         DT::datatable(item_table,
                       options = list(pageLength = nrow(item_table),
                                      scrollX = TRUE,
@@ -246,13 +312,46 @@ shinyServer(function(input, output, session) {
       dt_item_table
     })
 
-    output$move_table <- DT::renderDataTable({
+    # Moves
+    move_table <- reactive({
       chaos <- moveset_chaos_input()
       pokemon_chosen <- paste(input$pokemon_moveset)
 
-      dt_move_table <- tryCatch({
-        move_table <- moveset_data_get(chaos, pokemon_chosen, "Moves")
+      move_table <- tryCatch({
+        moveset_data_get(chaos, pokemon_chosen, "Moves")
+      }, error = function(error) {
+        message("An error occurred. Did you pick a game format that exists?")
+      })
 
+      move_table
+    })
+
+    output$hc_move_plot <- renderHighchart({
+      move_table <- move_table()
+      move_table <- move_table[1:10,]
+
+      hc_move_plot <- tryCatch({
+        hchart(move_table,
+               type = "bar",
+               name = "Percent Used",
+               hcaes(x = .data[["Moves"]],
+                     y = .data[["Percent Used"]])) %>%
+        hc_add_theme(hc_theme_elementary()) %>%
+        hc_xAxis(title = list(text = "Move")) %>%
+        hc_yAxis(title = list(text = "Percent Used"),
+                 min = 0,
+                 max = 100,
+                 tickInterval = 10)
+        }, error = function(error) {
+          message("An error occurred. Did you pick a game format that exists?")
+        })
+
+      hc_move_plot
+    })
+
+    output$dt_move_table <- DT::renderDataTable({
+      move_table <- move_table()
+      dt_move_table <- tryCatch({
         DT::datatable(move_table,
                       options = list(pageLength = nrow(move_table),
                                      scrollX = TRUE,
@@ -266,17 +365,52 @@ shinyServer(function(input, output, session) {
       dt_move_table
     })
 
-    output$spread_table <- DT::renderDataTable({
+    # Spreads
+    spread_table <- reactive({
       chaos <- moveset_chaos_input()
       pokemon_chosen <- paste(input$pokemon_moveset)
 
-      dt_spread_table <- tryCatch({
-        spread_table <- moveset_data_get(chaos, pokemon_chosen, "Spreads") %>%
-          separate(col = "Spreads", into = c("Nature", "HP", "Attack",
-                                             "Defense", "SpAtk", "SpDef",
-                                             "Speed"),
-           sep = "[:/]")
+      spread_table <- tryCatch({
+        moveset_data_get(chaos, pokemon_chosen, "Spreads")
+      }, error = function(error) {
+        message("An error occurred. Did you pick a game format that exists?")
+      })
 
+      spread_table
+    })
+
+    output$hc_spreads_plot <- renderHighchart({
+      spread_table <- spread_table()
+      spread_table <- spread_table[1:10,]
+
+      hc_spreads_plot <- tryCatch({
+        hchart(spread_table,
+               type = "bar",
+               name = "Percent Used",
+               hcaes(x = .data[["Spreads"]],
+                     y = .data[["Percent Used"]])) %>%
+        hc_add_theme(hc_theme_elementary()) %>%
+        hc_xAxis(title = list(text = "Nature, IV/EV Spread")) %>%
+        hc_yAxis(title = list(text = "Percent Used"),
+                 min = 0,
+                 max = 100,
+                 tickInterval = 10)
+        }, error = function(error) {
+          message("An error occurred. Did you pick a game format that exists?")
+        })
+
+      hc_spreads_plot
+    })
+
+    output$dt_spread_table <- DT::renderDataTable({
+      spread_table <- spread_table()
+      spread_table <- spread_table %>%
+        separate(col = "Spreads", into = c("Nature", "HP", "Attack",
+                                           "Defense", "SpAtk", "SpDef",
+                                           "Speed"),
+         sep = "[:/]")
+
+      dt_spread_table <- tryCatch({
         DT::datatable(spread_table,
                       options = list(pageLength = nrow(spread_table),
                                      scrollX = TRUE,
@@ -290,16 +424,106 @@ shinyServer(function(input, output, session) {
       dt_spread_table
     })
 
-    output$checks_n_counters <- DT::renderDataTable({
+    output$spreads_plot_note <- renderText({"Format -
+    Nature: HP/Attack/Defense/SpAtk/SpDef/Speed"
+    })
+
+    # Teammates
+    teammate_table <- reactive({
+      chaos <- moveset_chaos_input()
+      pokemon_chosen <- paste(input$pokemon_moveset)
+
+      teammate_table <- tryCatch({
+        moveset_data_get(chaos, pokemon_chosen, "Teammates")
+      }, error = function(error) {
+        message("An error occurred. Did you pick a game format that exists?")
+      })
+
+      teammate_table
+    })
+
+    output$hc_teammate_plot <- renderHighchart({
+      teammate_table <- teammate_table()
+      teammate_table <- rbind(head(teammate_table, 10), tail(teammate_table, 5))
+
+      hc_teammate_plot <- tryCatch({
+        hchart(teammate_table,
+               type = "bar",
+               name = "Percent Used",
+               hcaes(x = .data[["Teammates"]],
+                     y = .data[["Percent Used"]])) %>%
+        hc_add_theme(hc_theme_elementary()) %>%
+        hc_xAxis(title = list(text = "Pokemon")) %>%
+        hc_yAxis(title = list(text = "Percent Used Over Baseline"),
+                 max = 100,
+                 tickInterval = 10)
+        }, error = function(error) {
+          message("An error occurred. Did you pick a game format that exists?")
+        })
+
+      hc_teammate_plot
+    })
+
+    output$dt_teammate_table <- DT::renderDataTable({
+      teammate_table <- teammate_table()
+      dt_teammate_table <- tryCatch({
+        DT::datatable(teammate_table,
+                      options = list(pageLength = nrow(teammate_table),
+                                     scrollX = TRUE,
+                                     scrollY = 300,
+                                     fixedHeader=TRUE)
+                      )
+        }, error = function(error) {
+          message("An error occurred. Did you pick a game format that exists?")
+        })
+
+      dt_teammate_table
+    })
+
+    # Checks and Counters
+
+    checks_n_counters_table <- reactive({
       chaos <- moveset_chaos_input()
       txt <- moveset_txt_input()
       pokemon_chosen <- paste(input$pokemon_moveset)
 
-      dt_check_n_counter <- tryCatch({
-        check_n_counters <- checks_n_counters_get(chaos, txt, pokemon_chosen)
+      checks_n_counters_table <- tryCatch({
+        checks_n_counters_get(chaos, txt, pokemon_chosen)
+      }, error = function(error) {
+        message("An error occurred.xxx Did you pick a game format that exists?")
+      })
 
-        DT::datatable(check_n_counters,
-                      options = list(pageLength = nrow(check_n_counters),
+      checks_n_counters_table
+    })
+
+    output$hc_checks_plot <- renderHighchart({
+      checks_n_counters_table <- checks_n_counters_table()
+      checks_n_counters_table <- rbind(head(checks_n_counters_table, 10),
+                                       tail(checks_n_counters_table, 5))
+
+      hc_checks_plot <- tryCatch({
+        hchart(checks_n_counters_table,
+               type = "bar",
+               name = "Percent Used",
+               hcaes(x = .data[["Pokemon"]],
+                     y = .data[["KO/Switch Percentage Fixed"]])) %>%
+        hc_add_theme(hc_theme_elementary()) %>%
+        hc_xAxis(title = list(text = "Move")) %>%
+        hc_yAxis(title = list(text = "Percent Used"),
+                 max = 100,
+                 tickInterval = 10)
+        }, error = function(error) {
+          message("An error occurred. Did you pick a game format that exists?")
+        })
+
+      hc_checks_plot
+    })
+
+    output$dt_checks_n_counters <- DT::renderDataTable({
+      checks_n_counters_table <- checks_n_counters_table()
+      dt_check_n_counter <- tryCatch({
+        DT::datatable(checks_n_counters_table,
+                      options = list(pageLength = nrow(checks_n_counters_table),
                                      scrollX = TRUE,
                                      scrollY = 300,
                                      fixedHeader=TRUE)
