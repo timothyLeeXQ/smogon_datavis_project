@@ -147,6 +147,161 @@ shinyServer(function(input, output, session) {
       dt_usage_table
     })
 
+    # Usage Comparison
+
+    # Input 1
+    usage_input_1 <- reactive({
+        month_chosen <- paste(format(input$month_select_2a, "%Y-%m"))
+        gen_chosen <- paste(input$gen_select_2a)
+        format_chosen <- paste(input$format_select_2a)
+        weighting_chosen <- paste(input$skill_weighting_select_2a) %>%
+          str_replace_all(pattern = fixed("(all formats except current gen OU)"),
+               replacement = "") %>%
+          str_replace_all(pattern = fixed("(for current gen OU)"),
+               replacement = "")
+
+        usage_endpoint <- paste("https://www.smogon.com/stats/",
+                                month_chosen, "/",
+                                gen_chosen, format_chosen, "-",
+                                weighting_chosen, ".txt") %>%
+          str_replace_all(pattern = "[[:space:]]", replacement = "") %>%
+          str_to_lower()
+
+      usage_input_1 <- tryCatch({
+        read_lines(usage_endpoint)
+        }, error = function(error) {
+        return(NULL)
+        })
+
+      usage_input_1
+    })
+
+    # Input 2
+    usage_input_2 <- reactive({
+        month_chosen <- paste(format(input$month_select_2b, "%Y-%m"))
+        gen_chosen <- paste(input$gen_select_2b)
+        format_chosen <- paste(input$format_select_2b)
+        weighting_chosen <- paste(input$skill_weighting_select_2b) %>%
+          str_replace_all(pattern = fixed("(all formats except current gen OU)"),
+               replacement = "") %>%
+          str_replace_all(pattern = fixed("(for current gen OU)"),
+               replacement = "")
+
+        usage_endpoint <- paste("https://www.smogon.com/stats/",
+                                month_chosen, "/",
+                                gen_chosen, format_chosen, "-",
+                                weighting_chosen, ".txt") %>%
+          str_replace_all(pattern = "[[:space:]]", replacement = "") %>%
+          str_to_lower()
+
+      usage_input_2 <- tryCatch({
+        read_lines(usage_endpoint)
+        }, error = function(error) {
+        return(NULL)
+        })
+
+      usage_input_2
+    })
+
+    # Comparison df
+    df_usage_comparison <- reactive({
+      usage_input_1 <- usage_input_1()
+      usage_input_2 <- usage_input_2()
+
+      df_usage_1 <- usage_data_get(usage_input_1)
+      df_usage_2 <- usage_data_get(usage_input_2)
+
+      df_usage_comparison <- usage_comparison_format(df_usage_1, df_usage_2)
+    })
+
+    # Comparison scatterplot
+    output$hc_comparison_plot <- renderHighchart({
+      df_usage_comparison <- df_usage_comparison()
+
+      #Whether to pull from usage, raw, or real columns
+      usage_weighting_chosen <- paste(input$usage_weighting_select_2)
+
+      # X and Y - usage, raw, or real
+      x_metric <- paste0(str_to_lower(usage_weighting_chosen), "_perc_1")
+      y_metric <- paste0(str_to_lower(usage_weighting_chosen), "_perc_2")
+
+      month_chosen_x <- paste(format(input$month_select_2a, "%Y-%m"))
+      gen_chosen_x <- paste(input$gen_select_2a)
+      format_chosen_x <- paste(input$format_select_2a)
+      weighting_chosen_x <- paste(input$skill_weighting_select_2a) %>%
+        str_replace_all(pattern = fixed("(all formats except current gen OU)"),
+                        replacement = "") %>%
+        str_replace_all(pattern = fixed("(for current gen OU)"),
+                        replacement = "")
+
+      month_chosen_y <- paste(format(input$month_select_2b, "%Y-%m"))
+      gen_chosen_y <- paste(input$gen_select_2b)
+      format_chosen_y <- paste(input$format_select_2b)
+      weighting_chosen_y <- paste(input$skill_weighting_select_2b) %>%
+        str_replace_all(pattern = fixed("(all formats except current gen OU)"),
+                        replacement = "") %>%
+        str_replace_all(pattern = fixed("(for current gen OU)"),
+                        replacement = "")
+
+      # Label the x and y axes
+      x_label <- paste(month_chosen_x, gen_chosen_x,
+                       format_chosen_x, "-", weighting_chosen_x,
+                       usage_weighting_chosen, "%")
+      y_label <- paste(month_chosen_y, gen_chosen_y,
+                       format_chosen_y, "-",weighting_chosen_y,
+                       usage_weighting_chosen, "%")
+
+      # Tooltip text format
+      tooltip_text <- paste0("Pokemon: {point.Pokemon} <br>",
+                             x_label, ": ", "{point.", x_metric, "} <br>",
+                             y_label, ": ", "{point.", y_metric, "}"
+                            )
+
+      # Constants for drawing the diagonal and setting axes
+      max_usage <- max(df_usage_comparison[[x_metric]],
+                       df_usage_comparison[[y_metric]])
+
+      hc_comparison_plot <- tryCatch({
+        highchart() %>%
+          hc_add_series(name = "diag",
+                        data = diagonal,
+                        hcaes(x = .data$x, y = .data$y),
+                        type = "line",
+                        color = "black") %>%
+          hc_add_series(name = "Usage Comparison",
+                        data = df_usage_comparison,
+                        hcaes(x = .data[[x_metric]], y = .data[[y_metric]]),
+                        type = "scatter",
+                        tooltip = list(pointFormat = tooltip_text)) %>%
+          hc_add_theme(hc_theme_elementary()) %>%
+          hc_xAxis(title = list(text = x_label),
+                   min = 0,
+                   max = max_usage,
+                   tickInterval = 10,
+                   endOnTick = TRUE) %>%
+          hc_yAxis(title = list(text = y_label),
+                   min = 0,
+                   max = max_usage,
+                   tickInterval = 10,
+                   endOnTick = TRUE) %>%
+          hc_size(800, 800) %>%
+          hc_plotOptions(series = list(showInLegend = FALSE)) %>%
+          hc_chart(zoomType = "xy")
+        }, error = function(error) {
+          message("An error occurred. Did you pick a game format that exists?")
+        })
+
+      hc_comparison_plot
+    })
+
+    output$comparison_plot_note <- renderText({"Click and drag on the chart to
+      zoom in. Click \"Reset Zoom\" to return the chart to its original
+      dimensions."})
+
+
+
+
+
     # Moveset data
     moveset_chaos_input <- reactive({
       month_chosen <- paste(format(input$month_moveset, "%Y-%m"))

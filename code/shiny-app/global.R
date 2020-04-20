@@ -236,6 +236,32 @@ skill_ranking <- c("0", "1500",
 # Usage weightings
 usage_weighting <- c("Usage", "Raw", "Real")
 
+
+
+# Comparison functions and support objects
+
+usage_comparison_format <- function(usage_1, usage_2){
+  col_name <- c("Pokemon", "usage_perc", "raw_perc", "real_perc")
+  usage_1 <- select(usage_1, c("Pokemon", "Usage %", "Raw %", "Real %"))
+  usage_2 <- select(usage_2, c("Pokemon", "Usage %", "Raw %", "Real %"))
+  
+  colnames(usage_1) <- col_name
+  colnames(usage_2) <- col_name
+  
+  df_usage_comparison <- full_join(usage_1,
+                                   usage_2,
+                                   by = "Pokemon",
+                                   suffix = c("_1", "_2")
+  )
+  df_usage_comparison[is.na(df_usage_comparison)] <- 0
+  df_usage_comparison
+}
+
+  # Scatterplot diagonal
+diagonal <- data.frame(x = c(-100, 200), y = c(-100, 200))
+
+
+
 # Moveset functions
 moveset_data_get <- function(x, pokemon, attribute) {
   weighted_count <- sum(unlist(x$data[[pokemon]][["Abilities"]]))

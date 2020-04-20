@@ -118,7 +118,7 @@ body <- dashboardBody(
                     title = "Select Month 2:",
                     airMonthpickerInput(
                         inputId = "month_select_2b",
-                        value = format(Sys.Date()-31, "%Y-%m-%d"),
+                        value = format(Sys.Date()-62, "%Y-%m-%d"),
                         label = " ",
                         minDate = "2014-11-01",
                         maxDate = format(Sys.Date()-31, "%Y-%m-%d"),
@@ -142,7 +142,12 @@ body <- dashboardBody(
             ),
             fluidRow(
                 box(width = 12,
-                    title = "Usage Comparison")
+                  title = "Comparison Plot",
+                  highchartOutput("hc_comparison_plot",
+                                  width = "600px",
+                                  height = "600px"),
+                  textOutput("comparison_plot_note")
+                    )
             )
           ),
         tabItem(
