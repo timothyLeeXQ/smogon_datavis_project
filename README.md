@@ -66,11 +66,11 @@ tactics?
     * Table for raw usage % data
 3. Create FAQ
 4. Dashboard to access basic moveset data
+5. Provide ability to compare usage in different months/skill levels
 
 **To do for MVP:**
 1. Adapt Usage statistics dashboard to provide more specific access to monotype
 data
-2. Provide ability to visualise usage trend comparisons over time
 
 **Stretch Goals:**
 1. Provide network visualisation and statistics based on checks/counters data
