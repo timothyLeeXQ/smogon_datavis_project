@@ -71,11 +71,13 @@ tactics?
 **To do:**
 1. Adapt Usage statistics dashboard to provide more specific access to monotype
 data
-2. Add VGC 2020 to Formats list.
-3. Add Action Button (and Tabbed view?) to moveset tab.
+2. Add Action Button (and Tabbed view?) to moveset tab.
 
 **Stretch Goals:**
 1. Provide network visualisation and statistics based on checks/counters data
+
+**Updates**
+1. Added VGC 2020 to Format List
 
 ## Links
 * [Smogon Stats](https://www.smogon.com/stats/)

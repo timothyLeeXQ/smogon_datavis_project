@@ -220,8 +220,8 @@ names(type_colours) <- types1
 gen_vec <- paste("Gen", c(8:1))
 
 # Formats
-formats <- c("OU", "Ubers", "UU", "RU", "NU", "PU", "LC", "Anything Goes",
-             "Monotype", "NFE", "1v1", "CAP", "Battle Stadium Singles",
+formats <- c("OU", "Ubers", "UU", "RU", "NU", "PU", "LC", "Anything Goes", 
+             "VGC 2020", "Monotype", "NFE", "1v1", "CAP", "Battle Stadium Singles",
              "Doubles OU", "Doubles Ubers", "Doubles UU", "Battle Stadium Doubles",
              "2v2 Doubles", "National Dex", "National Dex AG",
              "Inheritance", "Scalemons","Balanced Hackmons", "Mix and Mega",
