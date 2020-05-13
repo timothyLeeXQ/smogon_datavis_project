@@ -68,9 +68,11 @@ tactics?
 4. Dashboard to access basic moveset data
 5. Provide ability to compare usage in different months/skill levels
 
-**To do for MVP:**
+**To do:**
 1. Adapt Usage statistics dashboard to provide more specific access to monotype
 data
+2. Add VGC 2020 to Formats list.
+3. Add Action Button (and Tabbed view?) to moveset tab.
 
 **Stretch Goals:**
 1. Provide network visualisation and statistics based on checks/counters data
